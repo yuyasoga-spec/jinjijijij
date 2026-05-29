@@ -3,1010 +3,1056 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>株式会社liv人事部採用計画く</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<title>株式会社livマーケタスク管理</title>
+
+<script>
+  var FIREBASE_CONFIG = {
+    apiKey: "AIzaSyDID9VLnYZwYaJ2wrQBYIj29gcMmyG6yuc",
+    authDomain: "task-abef2.firebaseapp.com",
+    databaseURL: "https://task-abef2-default-rtdb.firebaseio.com",
+    projectId: "task-abef2",
+    storageBucket: "task-abef2.firebasestorage.app",
+    messagingSenderId: "364908646523",
+    appId: "1:364908646523:web:809256785c2387e65952de"
+  };
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=JetBrains+Mono:wght@500&display=swap');
-
 :root {
-  --cream:   #fdf8f0;
-  --cream2:  #fef3e2;
-  --sage:    #b5c9a8;
-  --sage2:   #8aab7a;
-  --sage3:   #5d8a50;
-  --mint:    #d4ede8;
-  --blush:   #f7d9d9;
-  --peach:   #fce4c8;
-  --sky:     #cce4f7;
-  --lavender:#e5daf7;
-  --yellow:  #fef3b0;
-  --brown:   #8b6551;
-  --text:    #4a3728;
-  --text2:   #7a6055;
-  --border:  #e8d5c0;
-
-  --pri-s: #e05c5c;
-  --pri-a: #d4900a;
-  --pri-b: #4a86c8;
-  --pri-c: #8a9a8a;
-
-  --r: 16px; --r-sm: 10px; --r-xs: 6px;
-  --shadow: 0 3px 12px rgba(139,101,81,.12);
-  --shadow-lg: 0 8px 32px rgba(139,101,81,.18);
+  --bg:        #f4f0e6; 
+  --surface:   #ffffff;
+  --surface2:  #ede6da;
+  --surface3:  #faf8f5;
+  --border:    rgba(160,140,110,0.2);
+  --border2:   rgba(120,100,80,0.4);
+  --text:      #423830; 
+  --text2:     #736457;
+  --text3:     #ab9a8c;
+  
+  --blue:      #7db4e3;
+  --blue-bg:   #eef5fc;
+  --blue-tx:   #3b6b94;
+  --amber-bg:  #fdf3df;
+  --amber-tx:  #946c23;
+  --green-bg:  #e6f4de;
+  --green-tx:  #4d7a34;
+  --red-bg:    #fbe5e5;
+  --red-tx:    #a64444;
+  --gray-bg:   #ededeb;
+  --gray-tx:   #6e6e6b;
+  
+  --radius:    18px; 
+  --radius-lg: 24px;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: 'Zen Maru Gothic', sans-serif;
-  background: var(--cream);
-  color: var(--text);
-  min-height: 100vh;
-  font-size: 13px;
-  line-height: 1.6;
-  background-image:
-    radial-gradient(ellipse at 10% 20%, rgba(181,201,168,.25) 0%, transparent 50%),
-    radial-gradient(ellipse at 90% 80%, rgba(252,228,200,.4) 0%, transparent 50%);
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:       #1e1c1a;
+    --surface:  #292522;
+    --surface2: #36302b;
+    --surface3: #24211e;
+    --border:   rgba(255,255,255,.07);
+    --border2:  rgba(255,255,255,.15);
+    --text:     #f2eae1;
+    --text2:    #bfa897;
+    --text3:    #7a6b5f;
+    --blue-bg:  #182d3d;
+    --blue-tx:  #9ec8f0;
+    --amber-bg: #3d2d17;
+    --amber-tx: #f5c478;
+    --green-bg: #1d3016;
+    --green-tx: #a3d97e;
+    --red-bg:   #3d1a1a;
+    --red-tx:   #f29999;
+    --gray-bg:  #33312f;
+    --gray-tx:  #c2c0bc;
+  }
 }
 
-/* Floating animals */
-.forest-bg {
-  position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
-}
-.f-animal {
-  position: absolute; font-size: 32px; opacity: .08;
-  animation: floatAnimal 12s ease-in-out infinite;
-}
-.f-animal:nth-child(1){ top:5%; left:3%; animation-delay:0s; font-size:40px; }
-.f-animal:nth-child(2){ top:15%; right:4%; animation-delay:2s; font-size:28px; }
-.f-animal:nth-child(3){ bottom:20%; left:5%; animation-delay:4s; font-size:36px; }
-.f-animal:nth-child(4){ bottom:10%; right:6%; animation-delay:1s; font-size:30px; }
-.f-animal:nth-child(5){ top:50%; left:1%; animation-delay:3s; font-size:24px; }
-.f-animal:nth-child(6){ top:40%; right:2%; animation-delay:5s; font-size:26px; }
-.f-animal:nth-child(7){ top:75%; left:45%; animation-delay:2.5s; font-size:22px; }
-@keyframes floatAnimal {
-  0%,100%{ transform:translateY(0) rotate(-5deg); }
-  50%{ transform:translateY(-18px) rotate(5deg); }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { 
+  font-family: 'Hiragino Maru Gothic ProN', 'Yu Gothic UI', sans-serif; 
+  background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; position: relative; overflow-x: hidden;
+  background-image: radial-gradient(var(--border) 1.5px, transparent 0), linear-gradient(to bottom, transparent 80%, rgba(210,225,190,0.1) 100%); background-size: 24px 24px, 100% 100%;
 }
 
-/* ── Header ── */
-header {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(253,248,240,.92); backdrop-filter: blur(12px);
-  border-bottom: 2px dashed var(--border);
-  padding: 0 24px;
-  display: flex; align-items: center; justify-content: space-between;
-  height: 64px;
-}
-.logo {
-  display: flex; align-items: center; gap: 10px;
-  font-weight: 900; font-size: 17px; color: var(--sage3);
-  letter-spacing: .04em;
-}
-.logo-animals { font-size: 22px; display: flex; gap: 2px; }
-.header-meta { display: flex; align-items: center; gap: 14px; }
-.live-badge {
-  display: flex; align-items: center; gap: 6px;
-  background: #e8f5e9; border: 1.5px solid var(--sage2);
-  color: var(--sage3); padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700;
-}
-.live-dot { width:7px;height:7px;background:var(--sage2);border-radius:50%;animation:pulse 2s infinite; }
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.forest-bg-element { position: fixed; font-size: 40px; opacity: 0.12; pointer-events: none; z-index: -1; user-select: none; }
+@media (max-width: 1200px) { .forest-bg-element { display: none; } }
 
-/* ── Tabs ── */
-.tab-bar {
-  background: rgba(253,248,240,.95);
-  border-bottom: 2px dashed var(--border);
-  padding: 0 24px; display: flex; gap: 4px; position: sticky; top: 64px; z-index: 99;
-}
-.tab {
-  padding: 14px 20px; cursor: pointer; font-size: 13px; font-weight: 700;
-  color: var(--text2); border-bottom: 3px solid transparent;
-  transition: all .2s; border-radius: var(--r-xs) var(--r-xs) 0 0;
-}
-.tab:hover { color: var(--sage3); background: rgba(181,201,168,.2); }
-.tab.active { color: var(--sage3); border-bottom-color: var(--sage2); background: rgba(181,201,168,.15); }
+.side-zoo { position: fixed; top: 120px; width: 80px; display: flex; flex-direction: column; gap: 30px; align-items: center; z-index: 10; user-select: none; }
+.side-zoo.left { left: 20px; } .side-zoo.right { right: 20px; }
+@media (max-width: 1250px) { .side-zoo { display: none; } }
 
-/* ── Main ── */
-main { padding: 20px 24px; max-width: 1800px; position: relative; z-index: 1; }
-.view { display: none; }
-.view.active { display: block; }
+.zoo-friend { font-size: 32px; cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
+.zoo-friend:hover { transform: scale(1.4) rotate(10deg); }
+.zoo-friend::after { content: "Click Me🐾"; position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%) scale(0); font-size: 9px; background: var(--text); color: #fff; padding: 2px 6px; border-radius: 8px; white-space: nowrap; opacity: 0; transition: all 0.2s; }
+.zoo-friend:hover::after { transform: translateX(-50%) scale(1); opacity: 0.9; }
 
-/* ── KPI Cards ── */
-.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 10px; margin-bottom: 20px; }
-.kpi-card {
-  background: #fff; border: 2px solid var(--border);
-  border-radius: var(--r); padding: 14px 16px;
-  box-shadow: var(--shadow); position: relative; overflow: hidden;
+#parade-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; overflow: hidden; }
+.parade-animal { position: absolute; font-size: 48px; will-change: right; animation: runCross 2.5s linear forwards; }
+@keyframes runCross {
+  0% { right: -100px; transform: scaleX(1); }
+  50% { transform: scaleX(1) translateY(-15px); }
+  51% { transform: scaleX(1) translateY(0px); }
+  75% { transform: scaleX(1) translateY(-15px); }
+  100% { right: 100vw; transform: scaleX(1) translateY(0px); }
 }
-.kpi-card::before {
-  content: attr(data-animal); position: absolute; right: -2px; bottom: -4px;
-  font-size: 32px; opacity: .18; transform: rotate(-10deg);
-}
-.kpi-label { font-size: 10px; font-weight: 700; color: var(--text2); margin-bottom: 3px; letter-spacing: .05em; }
-.kpi-value { font-size: 26px; font-weight: 900; font-family: 'JetBrains Mono'; }
-.kpi-sub { font-size: 10px; color: var(--text2); margin-top: 1px; }
-.kpi-sage   .kpi-value { color: var(--sage3); }
-.kpi-peach  .kpi-value { color: #d4751a; }
-.kpi-blush  .kpi-value { color: var(--pri-s); }
-.kpi-sky    .kpi-value { color: #2a6fb0; }
-.kpi-lav    .kpi-value { color: #6a40c8; }
-.kpi-yellow .kpi-value { color: #b08a00; }
 
-/* ── Toolbar ── */
-.toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
-.btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 700;
-  font-family: inherit; cursor: pointer; border: 2px solid transparent; transition: all .15s;
+/* ── 🐈‍⬛ 【隠しコマンド】巨大ネコ用スタイル ── */
+#giant-cat {
+  position: fixed; bottom: -600px; left: 50%; transform: translateX(-50%);
+  font-size: 500px; line-height: 1; z-index: 99999; pointer-events: auto; cursor: pointer;
+  transition: bottom 0.8s cubic-bezier(0.19, 1, 0.22, 1); user-select: none;
 }
-.btn-primary { background: var(--sage2); border-color: var(--sage3); color: #fff; }
-.btn-primary:hover { background: var(--sage3); transform: translateY(-1px); box-shadow: var(--shadow); }
-.btn-ghost { background: #fff; border-color: var(--border); color: var(--text2); }
-.btn-ghost:hover { border-color: var(--sage); background: var(--mint); }
-.btn-danger { background: #fff0f0; border-color: #f5a0a0; color: var(--pri-s); }
-.search-box {
-  flex: 1; max-width: 260px;
-  background: #fff; border: 2px solid var(--border);
-  border-radius: 100px; padding: 7px 16px;
-  color: var(--text); font-family: inherit; font-size: 12px;
-}
-.search-box:focus { outline: none; border-color: var(--sage2); }
-.filter-select {
-  background: #fff; border: 2px solid var(--border); border-radius: 100px;
-  padding: 7px 12px; color: var(--text); font-family: inherit; font-size: 12px; cursor: pointer;
-}
-.filter-select:focus { outline: none; border-color: var(--sage2); }
+#giant-cat.reveal { bottom: -120px; }
 
-/* ── Accordion ── */
-.accordion-wrap { margin-bottom: 20px; }
-.accordion-item {
-  background: #fff; border: 2px solid var(--border); border-radius: var(--r);
-  margin-bottom: 8px; overflow: hidden; box-shadow: var(--shadow);
-}
-.accordion-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 18px; cursor: pointer; font-weight: 700; font-size: 14px;
-  transition: background .15s; user-select: none;
-}
-.accordion-header:hover { background: var(--cream2); }
-.accordion-header.open { background: var(--cream2); }
-.acc-left { display: flex; align-items: center; gap: 10px; }
-.acc-icon { font-size: 20px; }
-.acc-arrow { font-size: 12px; color: var(--text2); transition: transform .2s; }
-.accordion-header.open .acc-arrow { transform: rotate(90deg); }
-.accordion-body { display: none; border-top: 2px dashed var(--border); }
-.accordion-body.open { display: block; }
+.header { background: var(--surface); border-bottom: 3px dashed var(--border); padding: 0 1.5rem; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 20; }
+.header-left { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.logo { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 7px; }
+.tabs { display: flex; gap: 4px; background: var(--surface2); border-radius: var(--radius); padding: 4px; }
+.tab { padding: 6px 16px; font-size: 12px; border: none; background: transparent; color: var(--text2); border-radius: 12px; cursor: pointer; transition: all .15s; font-weight: 600; }
+.tab.active { background: var(--surface); color: var(--text); box-shadow: 0 3px 8px rgba(0,0,0,0.06); }
+.sync { font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 5px; }
+.sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green-tx); flex-shrink: 0; }
+.sync-dot.err { background: var(--red-tx); } .sync-dot.warn { background: var(--amber-tx); }
 
-/* Sub-accordion (事業) */
-.sub-acc-item { border-bottom: 1px dashed var(--border); }
-.sub-acc-item:last-child { border-bottom: none; }
-.sub-acc-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 18px 10px 36px; cursor: pointer; font-weight: 700; font-size: 13px;
-  color: var(--text2); transition: background .15s;
-}
-.sub-acc-header:hover { background: var(--cream); }
-.sub-acc-header.open { background: var(--cream); }
-.sub-acc-body { display: none; }
-.sub-acc-body.open { display: block; }
+.main { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 5rem; position: relative; z-index: 2; }
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; margin-bottom: 2rem; }
+.sc { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: .9rem 1rem; box-shadow: 0 6px 14px rgba(120,100,80,0.04); text-align: center; transition: transform 0.2s; }
+.sc:hover { transform: translateY(-2px); }
+.sc-label { font-size: 11px; color: var(--text2); margin-bottom: 4px; font-weight: 700; }
+.sc-num { font-size: 24px; font-weight: 700; line-height: 1; }
 
-/* Table inside accordion */
-.acc-table-wrap { overflow-x: auto; }
-.acc-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.acc-table th {
-  background: var(--cream); padding: 8px 12px; text-align: left;
-  font-size: 10px; font-weight: 700; color: var(--text2); white-space: nowrap;
-  letter-spacing: .05em; border-bottom: 1px dashed var(--border);
-}
-.acc-table td {
-  padding: 8px 12px; border-bottom: 1px dashed var(--border); vertical-align: middle; white-space: nowrap;
-}
-.acc-table tr:last-child td { border-bottom: none; }
-.acc-table tr:hover td { background: var(--cream2); }
+.toolbar { display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; }
+.toolbar input, .toolbar select { height: 40px; padding: 0 14px; font-size: 13px; border: 2px solid var(--border2); border-radius: var(--radius); background: var(--surface); color: var(--text); outline: none; font-family: inherit; }
+.toolbar input { flex: 1; min-width: 160px; max-width: 260px; }
+.toolbar input:focus, .toolbar select:focus { border-color: var(--blue); background: var(--surface3); }
 
-/* ── Chips ── */
-.chip {
-  display: inline-flex; align-items: center; gap: 3px;
-  padding: 2px 10px; border-radius: 100px; font-size: 11px; font-weight: 700;
-}
-.chip-honbu   { background: #e8f5e9; color: var(--sage3); border: 1.5px solid #b5d4b0; }
-.chip-jigyou  { background: var(--lavender); color: #6340b0; border: 1.5px solid #c8b5e8; }
-.chip-shokushu{ background: var(--sky); color: #1a5fa0; border: 1.5px solid #a0c8e8; }
-.chip-layer   { background: var(--peach); color: #8a4a10; border: 1.5px solid #e8c0a0; }
-.chip-media   { background: var(--yellow); color: #806000; border: 1.5px solid #d4c060; }
+.btn-primary { display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 18px; font-size: 13px; font-weight: 700; background: #f3a9b1; border: none; border-radius: var(--radius); cursor: pointer; color: #fff; margin-left: auto; white-space: nowrap; box-shadow: 0 4px 10px rgba(243,169,177,0.4); transition: all 0.2s; }
+.btn-primary:hover { opacity: .95; transform: translateY(-2px) scale(1.02); }
+.btn-secondary { display: flex; align-items: center; gap: 5px; height: 36px; padding: 0 14px; font-size: 12px; font-weight: 600; background: var(--surface); border: 2px solid var(--border2); border-radius: var(--radius); cursor: pointer; color: var(--text2); transition: all 0.15s; }
+.btn-secondary:hover { background: var(--surface2); color: var(--text); transform: translateY(-1px); }
 
-/* Status */
-.status-chip {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1.5px solid;
-}
-.s-active { background: #e8f5e9; color: #2a8040; border-color: #90c890; }
-.s-warn   { background: var(--yellow); color: #806000; border-color: #d4c060; }
-.s-danger { background: #ffe8e8; color: #b02020; border-color: #f0a0a0; }
-.s-done   { background: var(--mint); color: #1a7060; border-color: #80c8b8; }
-.s-hold   { background: var(--cream2); color: var(--text2); border-color: var(--border); }
+.btn-festival { background: #f6c86b; border: none; color: #5c3e03; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 20px; cursor: pointer; box-shadow: 0 2px 5px rgba(246,200,107,0.4); margin-left: 4px; transition: all 0.1s; }
+.btn-festival:hover { transform: scale(1.08); background: #fcd98c; }
 
-/* Priority */
-.pri { display: inline-flex; align-items: center; gap: 3px; font-weight: 900; font-size: 13px; }
-.pri-S{ color:var(--pri-s); }
-.pri-A{ color:var(--pri-a); }
-.pri-B{ color:var(--pri-b); }
-.pri-C{ color:var(--pri-c); }
+tr.task-done-row { opacity: 0.45; background: rgba(0,0,0,0.02) !important; }
+tr.task-done-row .task-name { text-decoration: line-through rgba(0,0,0,0.3); }
 
-/* People */
-.people-bar { display: flex; align-items: center; gap: 5px; }
-.people-icons { display: flex; gap: 1px; font-size: 15px; }
-.p-filled { opacity: 1; }
-.p-empty { opacity: .2; }
-.people-nums { font-family: 'JetBrains Mono'; font-size: 11px; color: var(--text2); }
+.proj-list { display: flex; flex-direction: column; gap: 16px; }
+.proj-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: 0 8px 20px rgba(120,100,80,0.06); overflow: hidden; transition: all 0.2s; }
 
-/* Days */
-.days-pill {
-  font-family: 'JetBrains Mono'; font-size: 11px; font-weight: 700;
-  padding: 2px 9px; border-radius: 100px; border: 1.5px solid;
-}
-.days-ok     { background: #e8f5e9; color: #2a8040; border-color: #90c890; }
-.days-warn   { background: var(--yellow); color: #806000; border-color: #d4c060; }
-.days-danger { background: #ffe8e8; color: #b02020; border-color: #f0a0a0; }
+.p-theme-default { }
+.p-theme-strawberry  { background: #fffcfd; border-color: #fbcacf; } .p-theme-strawberry .proj-header { background: #fff0f2; }
+.p-theme-cherry      { background: #fffbfa; border-color: #fbcbc5; } .p-theme-cherry .proj-header { background: #ffece9; }
+.p-theme-orange      { background: #fffdfa; border-color: #fbd6b5; } .p-theme-orange .proj-header { background: #ffeedd; }
+.p-theme-lemon       { background: #fffef9; border-color: #fae796; } .p-theme-lemon .proj-header { background: #fff9cc; }
+.p-theme-melon       { background: #fafdf8; border-color: #beebd1; } .p-theme-melon .proj-header { background: #e2f7eb; }
+.p-theme-mint        { background: #f8fdfd; border-color: #bbf0eb; } .p-theme-mint .proj-header { background: #e0f9f6; }
+.p-theme-soda        { background: #f9fbfd; border-color: #bedaf3; } .p-theme-soda .proj-header { background: #e2effa; }
+.p-theme-sky         { background: #f6faff; border-color: #aed1f7; } .p-theme-sky .proj-header { background: #dcebff; }
+.p-theme-grape       { background: #fbf9fd; border-color: #dccef3; } .p-theme-grape .proj-header { background: #eee2fa; }
+.p-theme-lavender    { background: #fdf9fd; border-color: #eacfec; } .p-theme-lavender .proj-header { background: #f9e2fa; }
+.p-theme-cocoa       { background: #faf8f5; border-color: #ded1c1; } .p-theme-cocoa .proj-header { background: #f1e9de; }
+.p-theme-deepforest  { background: #f5f6f2; border-color: #cbd4bf; } .p-theme-deepforest .proj-header { background: #e4ebd9; }
 
-.budget-cell { font-family: 'JetBrains Mono'; font-size: 11px; color: var(--text2); }
+.proj-header { display: flex; align-items: center; gap: 0; cursor: pointer; user-select: none; min-height: 60px; }
+.proj-chevron { flex-shrink: 0; width: 52px; height: 60px; display: flex; align-items: center; justify-content: center; color: var(--text3); font-size: 16px; transition: transform .2s; }
+.proj-card.open .proj-chevron { transform: rotate(90deg); }
+.proj-name { flex: 1; font-size: 16px; font-weight: 700; color: var(--text); padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.proj-meta { display: flex; align-items: center; gap: 10px; padding: 0 16px 0 8px; flex-shrink: 0; }
+.proj-count { font-size: 12px; color: var(--text2); white-space: nowrap; font-weight: 700; }
+.proj-status-pills { display: flex; gap: 4px; flex-wrap: wrap; }
+.mini-pill { display: inline-flex; align-items: center; gap: 3px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.proj-actions { display: flex; gap: 4px; padding-right: 16px; flex-shrink: 0; opacity: 0; transition: opacity .1s; }
+.proj-header:hover .proj-actions { opacity: 1; }
 
-/* ── Calendar ── */
-.cal-wrap { background: #fff; border: 2px solid var(--border); border-radius: var(--r); padding: 20px; box-shadow: var(--shadow); }
-.cal-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.cal-nav-btn {
-  background: var(--cream2); border: 2px solid var(--border); border-radius: 100px;
-  width: 32px; height: 32px; cursor: pointer; font-size: 14px;
-  display: flex; align-items: center; justify-content: center; transition: all .15s;
-}
-.cal-nav-btn:hover { background: var(--mint); border-color: var(--sage); }
-.cal-title { font-size: 17px; font-weight: 900; color: var(--sage3); }
+.icon-btn { background: none; border: none; cursor: pointer; color: var(--text2); padding: 6px; border-radius: 10px; font-size: 15px; display: flex; align-items: center; transition: all 0.1s; }
+.icon-btn:hover { color: var(--text); background: rgba(0,0,0,0.06); transform: scale(1.1); }
+
+.task-table-wrap { overflow: hidden; max-height: 0; transition: max-height .25s ease; }
+.proj-card.open .task-table-wrap { max-height: 2000px; background: var(--surface); }
+.task-divider { border-top: 1px solid var(--border); }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
+thead th { background: var(--surface2); padding: 10px 12px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text2); border-bottom: 1px solid var(--border); white-space: nowrap; letter-spacing: .04em; }
+.col-task     { width: 22%; }
+.col-status   { width: 15%; }
+.col-next     { width: 29%; }
+.col-note     { width: 18%; }
+.col-owner    { width: 11%; }
+.col-actions  { width: 5%; }
+
+tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--surface3); }
+td { padding: 12px 12px; vertical-align: middle; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+td.multiline { white-space: normal; word-break: break-all; font-size: 12px; line-height: 1.6; }
+.task-name { font-weight: 700; color: var(--text); }
+.note-text { color: var(--text2); }
+.row-actions { display: flex; gap: 2px; opacity: 0; transition: opacity .1s; }
+tr:hover .row-actions { opacity: 1; }
+
+.add-task-row { border-top: 1px solid var(--border); }
+.add-task-btn { display: flex; align-items: center; gap: 6px; padding: 12px 16px; font-size: 12px; color: var(--text2); font-weight: 700; background: none; border: none; cursor: pointer; width: 100%; transition: all .1s; }
+.add-task-btn:hover { color: var(--blue-tx); background: var(--blue-bg); }
+
+/* ── 💬 【新機能】どうぶつおしゃべり場（掲示板）スタイル ── */
+.chat-section { background: var(--surface3); padding: 16px; border-top: 1px dashed var(--border); }
+.chat-title { font-size: 12px; font-weight: 800; color: var(--text2); margin-bottom: 10px; display: flex; align-items: center; gap: 4px; }
+.chat-history { max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; padding-right: 4px; }
+.chat-bubble { display: flex; gap: 8px; align-items: flex-start; animation: fadeInChat 0.2s ease forwards; }
+@keyframes fadeInChat { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.chat-avatar { font-size: 20px; background: #fff; border: 1.5px solid var(--border2); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.03); flex-shrink: 0; }
+.chat-content-box { background: #fff; padding: 8px 12px; border-radius: 14px; border: 1px solid var(--border); font-size: 12px; max-width: 85%; }
+.chat-meta { font-size: 10px; color: var(--text3); font-weight: 700; margin-bottom: 2px; }
+.chat-text { line-height: 1.4; word-break: break-all; }
+.chat-input-row { display: flex; gap: 6px; align-items: center; }
+.chat-name-input { width: 90px !important; height: 32px !important; padding: 0 8px !important; font-size: 11px !important; }
+.chat-msg-input { flex: 1; height: 32px !important; padding: 0 10px !important; font-size: 12px !important; }
+.btn-chat-send { background: var(--blue); color: #fff; border: none; height: 32px; padding: 0 12px; border-radius: var(--radius); font-size: 11px; font-weight: 700; cursor: pointer; }
+.btn-chat-send:hover { opacity: 0.9; }
+
+.empty-proj { text-align: center; padding: 4rem 1rem; color: var(--text3); }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.s-not_started { background: var(--gray-bg);  color: var(--gray-tx); }
+.s-in_progress  { background: var(--blue-bg);  color: var(--blue-tx); }
+.s-waiting      { background: var(--amber-bg); color: var(--amber-tx); }
+.s-done         { background: var(--green-bg); color: var(--green-tx); }
+.s-blocked      { background: var(--red-bg);   color: var(--red-tx); }
+
+.owner-chip { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; background: #fff; color: var(--text); border: 2px solid var(--border2); white-space: nowrap; max-width: 100%; }
+
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(50,40,30,0.4); align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(3px); }
+.modal-bg.open { display: flex; }
+.modal { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border); padding: 2rem; width: min(520px, 94vw); max-height: 90vh; overflow-y: auto; box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+.modal-title { font-size: 17px; font-weight: 700; margin-bottom: 1.5rem; text-align: center; }
+.field { margin-bottom: 1rem; }
+.field label { display: block; font-size: 11px; font-weight: 700; color: var(--text2); margin-bottom: 6px; letter-spacing: .04em; }
+.field input, .field select, .field textarea { width: 100%; padding: 11px 14px; font-size: 13px; border: 2px solid var(--border2); border-radius: var(--radius); background: var(--surface); color: var(--text); outline: none; font-family: inherit; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--blue); background: var(--surface3); }
+.field textarea { resize: vertical; min-height: 75px; line-height: 1.5; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 1.75rem; }
+.btn-cancel { padding: 10px 20px; font-size: 13px; font-weight:700; background: var(--surface2); border: none; border-radius: var(--radius); cursor: pointer; color: var(--text2); }
+.btn-save { padding: 10px 22px; font-size: 13px; font-weight: 700; background: var(--blue); border: none; border-radius: var(--radius); cursor: pointer; color: #fff; box-shadow: 0 4px 10px rgba(125,180,227,0.4); }
+
+.picker-grid { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; background: var(--surface2); padding: 10px; border-radius: var(--radius); max-height: 140px; overflow-y: auto; }
+.picker-btn { font-size: 20px; background: none; border: 2px solid transparent; cursor: pointer; padding: 6px; border-radius: 10px; transition: all 0.1s; display: flex; align-items: center; justify-content: center; }
+.picker-btn.selected { background: var(--surface); border-color: var(--blue); transform: scale(1.15); }
+
+.color-circle { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid rgba(0,0,0,0.1); cursor: pointer; transition: all 0.12s; }
+.color-circle.selected { transform: scale(1.2); border-color: var(--text); box-shadow: 0 0 6px rgba(0,0,0,0.25); }
+
+.toast { position: fixed; bottom: 2.5rem; left: 50%; transform: translateX(-50%); background: #423830; color: #fff; padding: 12px 28px; border-radius: 30px; font-size: 13px; font-weight: 700; z-index: 300; opacity: 0; transition: opacity .25s, bottom 0.25s; pointer-events: none; box-shadow: 0 6px 20px rgba(0,0,0,0.15); text-align: center; }
+.toast.show { opacity: 1; bottom: 3rem; }
+
+/* ── 📅 カレンダービュー ── */
+.cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+.cal-nav { display: flex; align-items: center; gap: 12px; }
+.cal-title { font-size: 18px; font-weight: 700; }
+.cal-nav-btn { background: var(--surface); border: 2px solid var(--border2); border-radius: var(--radius); width: 36px; height: 36px; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; color: var(--text2); transition: all .15s; }
+.cal-nav-btn:hover { background: var(--surface2); color: var(--text); }
+.cal-today-btn { background: var(--surface); border: 2px solid var(--border2); border-radius: var(--radius); padding: 0 14px; height: 36px; font-size: 12px; font-weight: 700; cursor: pointer; color: var(--text2); transition: all .15s; }
+.cal-today-btn:hover { background: var(--surface2); color: var(--text); }
 .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-.cal-weekday { text-align: center; font-size: 11px; font-weight: 700; color: var(--text2); padding-bottom: 6px; }
-.cal-day {
-  min-height: 72px; background: var(--cream); border-radius: var(--r-xs);
-  padding: 5px; border: 1.5px solid transparent; position: relative;
-}
-.cal-day.today { border-color: var(--sage2); background: #e8f5e9; }
-.cal-day.other-month .cal-day-num { color: #ccc; }
-.cal-day-num { font-size: 11px; font-weight: 700; margin-bottom: 3px; }
-.cal-event {
-  font-size: 10px; padding: 2px 5px; border-radius: 4px; margin-bottom: 2px;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; font-weight: 700;
-}
-.cal-ev-S { background: #ffe0e0; color: #b02020; }
-.cal-ev-A { background: var(--yellow); color: #806000; }
-.cal-ev-B { background: var(--sky); color: #1a5fa0; }
-.cal-ev-C { background: var(--cream2); color: var(--text2); }
-
-/* ── Analytics ── */
-.charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 14px; }
-.chart-card {
-  background: #fff; border: 2px solid var(--border); border-radius: var(--r);
-  padding: 16px; box-shadow: var(--shadow);
-}
-.chart-title {
-  font-size: 12px; font-weight: 900; color: var(--text2);
-  letter-spacing: .04em; margin-bottom: 14px; display: flex; align-items: center; gap: 6px;
-}
-.chart-wrap { position: relative; height: 210px; }
-
-/* ── Modal ── */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(74,55,40,.45); backdrop-filter: blur(4px);
-  z-index: 200; display: none; align-items: center; justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-  background: var(--cream); border: 2px solid var(--border); border-radius: var(--r);
-  width: 580px; max-width: 95vw; max-height: 92vh; overflow-y: auto;
-  padding: 24px; box-shadow: var(--shadow-lg);
-}
-.modal-animal { font-size: 36px; text-align: center; margin-bottom: 4px; }
-.modal-title { font-size: 17px; font-weight: 900; color: var(--sage3); text-align: center; margin-bottom: 20px; }
-.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.form-group { display: flex; flex-direction: column; gap: 4px; }
-.form-group.full { grid-column: 1/-1; }
-.form-label { font-size: 11px; color: var(--text2); font-weight: 700; }
-.form-input, .form-select, .form-textarea {
-  background: #fff; border: 2px solid var(--border); border-radius: var(--r-xs);
-  color: var(--text); font-family: inherit; font-size: 13px; padding: 8px 10px;
-}
-.form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--sage2); }
-.form-textarea { resize: vertical; min-height: 60px; }
-.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
-
-/* ── Master Settings Modal ── */
-.modal-overlay#master-modal {
-  position: fixed; inset: 0; background: rgba(74,55,40,.45); backdrop-filter: blur(4px);
-  z-index: 200; display: none; align-items: center; justify-content: center;
-}
-.modal-overlay#master-modal.open { display: flex; }
-
-.master-modal {
-  width: 620px;
-}
-.master-section { margin-bottom: 20px; }
-.master-sec-title { font-size: 13px; font-weight: 900; color: var(--sage3); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-.master-items { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.master-tag {
-  display: inline-flex; align-items: center; gap: 5px;
-  background: #fff; border: 2px solid var(--border); border-radius: 100px;
-  padding: 3px 10px; font-size: 12px; font-weight: 700;
-}
-.master-tag-del {
-  cursor: pointer; color: #f07070; font-size: 14px; line-height: 1;
-  background: none; border: none; font-family: inherit; padding: 0;
-}
-.master-tag-del:hover { color: var(--pri-s); }
-.master-add-row { display: flex; gap: 6px; }
-.master-add-input {
-  background: #fff; border: 2px solid var(--border); border-radius: 100px;
-  color: var(--text); font-family: inherit; font-size: 12px; padding: 5px 12px; flex: 1;
-}
-.master-add-input:focus { outline: none; border-color: var(--sage2); }
-.master-add-btn {
-  background: var(--sage2); border: 2px solid var(--sage3); color: #fff;
-  border-radius: 100px; padding: 5px 14px; font-size: 12px; font-weight: 700;
-  font-family: inherit; cursor: pointer;
-}
-.master-add-btn:hover { background: var(--sage3); }
-
-/* ── Divider ── */
-.section-label {
-  font-size: 11px; font-weight: 900; color: var(--text2);
-  text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px;
-  display: flex; align-items: center; gap: 6px;
-}
-.section-label::after {
-  content: ''; flex: 1; height: 1px; background: var(--border);
-}
-
-.empty-row td { text-align:center; padding: 30px; color: var(--text2); font-size: 13px; }
-
-.acc-count {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-width: 22px; height: 22px; background: var(--sage2); color: #fff;
-  border-radius: 100px; font-size: 11px; font-weight: 900; padding: 0 6px;
-}
-.acc-kpi-mini { display: flex; gap: 10px; font-size: 11px; color: var(--text2); }
-.acc-kpi-mini span { display: flex; align-items: center; gap: 3px; }
-
-.note-cell { max-width: 130px; overflow: hidden; text-overflow: ellipsis; color: var(--text2); }
-
-.progress-mini { display: flex; align-items: center; gap: 6px; }
-.prog-bar { flex: 1; height: 5px; background: var(--cream2); border-radius: 3px; min-width: 40px; }
-.prog-fill { height: 100%; border-radius: 3px; background: var(--sage2); }
+.cal-dow { text-align: center; font-size: 11px; font-weight: 700; color: var(--text2); padding: 8px 0; }
+.cal-dow:first-child { color: var(--red-tx); }
+.cal-dow:last-child  { color: var(--blue-tx); }
+.cal-cell { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; min-height: 90px; padding: 6px; display: flex; flex-direction: column; gap: 3px; transition: all .15s; }
+.cal-cell:hover { border-color: var(--border2); box-shadow: 0 3px 8px rgba(0,0,0,0.06); }
+.cal-cell.other-month { background: var(--surface3); opacity: 0.5; }
+.cal-cell.today { border-color: var(--blue); border-width: 2px; }
+.cal-day-num { font-size: 12px; font-weight: 700; color: var(--text2); line-height: 1; }
+.cal-cell.today .cal-day-num { background: var(--blue); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+.cal-cell:first-child .cal-day-num, .cal-dow:first-child ~ .cal-cell:nth-child(7n+1) .cal-day-num { color: var(--red-tx); }
+.cal-task-chip { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; transition: opacity .1s; line-height: 1.4; }
+.cal-task-chip:hover { opacity: 0.75; }
+.cal-more { font-size: 10px; color: var(--text3); font-weight: 700; padding: 1px 4px; }
+.cal-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1.25rem; padding: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.cal-legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text2); font-weight: 700; }
+.cal-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.due-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--amber-bg); color: var(--amber-tx); }
+.due-badge.overdue { background: var(--red-bg); color: var(--red-tx); }
+.due-badge.today-due { background: var(--blue-bg); color: var(--blue-tx); }
 </style>
 </head>
 <body>
 
-<div class="forest-bg">
-  <div class="f-animal">🦊</div>
-  <div class="f-animal">🐿️</div>
-  <div class="f-animal">🦔</div>
-  <div class="f-animal">🐰</div>
-  <div class="f-animal">🦉</div>
-  <div class="f-animal">🐦</div>
-  <div class="f-animal">🍄</div>
+<div id="parade-container"></div>
+
+<div id="giant-cat" onclick="toggleGiantCat()">🐈‍⬛</div>
+
+<div class="forest-bg-element" style="top: 90px; left: 4%; opacity: 0.08;">☁️</div>
+<div class="forest-bg-element" style="top: 250px; left: 2%; font-size: 50px;">🌲</div>
+<div class="forest-bg-element" style="top: 600px; left: 5%;">🌳</div>
+<div class="forest-bg-element" style="top: 160px; right: 3%; font-size: 45px;">🌲</div>
+<div class="forest-bg-element" style="top: 450px; right: 1%; opacity: 0.08;">☁️</div>
+<div class="forest-bg-element" style="top: 750px; right: 4%;">🌻</div>
+
+<div class="side-zoo left">
+  <div class="zoo-friend" onclick="cryAnimal('🐰', 'ぴょん！タスクがんばって！')">🐰</div>
+  <div class="zoo-friend" onclick="cryAnimal('🐱', 'にゃ〜お。スプシ同期した？')">🐱</div>
+  <div class="zoo-friend" onclick="cryAnimal('🦊', 'コンコン！進捗どうですか？')">🦊</div>
+  <div class="zoo-friend" onclick="cryAnimal('🐥', 'ピヨピヨ！よく確認してね')">🐥</div>
 </div>
 
-<header>
-  <div class="logo">
-    <div class="logo-animals">🌿🦊🌱</div>
-    株式会社liv人事部採用
+<div class="side-zoo right">
+  <div class="zoo-friend" onclick="cryAnimal('🐻', 'クマー！お疲れ様ですのクマ')">🐻</div>
+  <div class="zoo-friend" onclick="cryAnimal('🐼', '笹もぐもぐ。休憩も大切だよ')">🐼</div>
+  <div class="zoo-friend" onclick="cryAnimal('🐶', 'わんわん！応援してるワン！')">🐶</div>
+  <div class="zoo-friend" onclick="cryAnimal('🐸', 'ケロケロ！完了タスクがいっぱいだ')">🐸</div>
+</div>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo">
+      <span>🐾</span>
+      株式会社livマーkrティング部タスク管理シート
+      <button class="btn-festival" onclick="startAnimalParade()">🏮 お祭りモード</button>
+    </div>
+    <div class="tabs">
+      <button class="tab active" id="tab-all"      onclick="setView('all')">みんなのシート</button>
+      <button class="tab"        id="tab-mine"     onclick="setView('mine')">じぶんのシート</button>
+      <button class="tab"        id="tab-calendar" onclick="setView('calendar')">📅 カレンダー</button>
+    </div>
   </div>
-  <div class="header-meta">
-    <button class="btn btn-ghost" style="font-size:11px" onclick="openMasterModal()">⚙️ 項目マスター編集</button>
-    <div class="live-badge"><div class="live-dot"></div>🐿️ 共同編集中</div>
-    <span id="last-updated" style="font-size:11px;color:var(--text2)"></span>
+  <div class="sync">
+    <span class="sync-dot warn" id="sync-dot"></span>
+    <span id="sync-text">おはなし中…</span>
   </div>
 </header>
 
-<div class="tab-bar">
-  <div class="tab active" onclick="switchTab('list')">🌿 採用一覧</div>
-  <div class="tab" onclick="switchTab('calendar')">🗓️ カレンダー</div>
-  <div class="tab" onclick="switchTab('analytics')">📊 分析</div>
-</div>
+<main class="main">
+  <div id="setup-banner" class="setup-banner" style="display:none">
+    <strong>⚠ Firebase未設定</strong>：<code>FIREBASE_CONFIG</code> を設定してね。
+  </div>
 
-<main>
-
-<div id="view-list" class="view active">
-  <div class="kpi-row" id="kpi-row"></div>
+  <div class="summary" id="summary"></div>
 
   <div class="toolbar">
-    <button class="btn btn-primary" onclick="openAddModal()">🐣 新規採用計画を追加</button>
-    <input class="search-box" type="text" placeholder="🔍 キーワード検索…" oninput="renderAccordion()">
-    <select class="filter-select" id="f-status" onchange="renderAccordion()">
-      <option value="">ステータス すべて</option>
-      <option>採用中</option><option>達成</option><option>期限超過</option><option>保留</option><option>計画中</option>
+    <input  type="text" id="search" placeholder="なにかお探しですか？ 🔍" oninput="renderProjects()">
+    <select id="filter-status" onchange="renderProjects()">
+      <option value="">すべてのステータス</option>
+      <option value="not_started">💤 未着手</option>
+      <option value="in_progress">🌱 進行中</option>
+      <option value="waiting">⏳ 待ち・確認中</option>
+      <option value="done">✨ 完了</option>
+      <option value="blocked">🚧 ブロック中</option>
     </select>
-    <select class="filter-select" id="f-priority" onchange="renderAccordion()">
-      <option value="">優先度 すべて</option>
-      <option>S</option><option>A</option><option>B</option><option>C</option>
+    <select id="filter-owner" onchange="renderProjects()">
+      <option value="">だれのタスク？</option>
     </select>
-    <button class="btn btn-ghost" onclick="exportCSV()">⬇️ CSV</button>
+    <button class="btn-secondary" onclick="toggleAllProjects()" id="expand-btn">
+      <i class="ti ti-chevrons-down"></i> すべてひらく
+    </button>
+    <button class="btn-secondary" onclick="drawOmikuji()">
+      <i class="ti ti-crystal-ball"></i> 🔮 おみくじ
+    </button>
+    <button class="btn-secondary" onclick="syncToSpreadsheet()" id="sync-sheet-btn">
+      <i class="ti ti-table-share"></i> スプシへ届ける
+    </button> 
+    <button class="btn-primary" onclick="openProjectModal()">
+      <i class="ti ti-plus"></i> 新しいプロジェクト
+    </button>
   </div>
 
-  <div class="accordion-wrap" id="accordion-wrap"></div>
-</div>
-
-<div id="view-calendar" class="view">
-  <div class="cal-wrap">
-    <div class="cal-top">
-      <button class="cal-nav-btn" onclick="calNav(-1)">◀</button>
-      <div class="cal-title" id="cal-title"></div>
-      <button class="cal-nav-btn" onclick="calNav(1)">▶</button>
-    </div>
-    <div class="cal-grid" id="cal-grid"></div>
-    <div style="display:flex;gap:14px;margin-top:14px;flex-wrap:wrap;font-size:11px;font-weight:700;color:var(--text2)">
-      <span>🔴 S（最優先）</span><span>🟡 A（高）</span><span>🔵 B（中）</span><span>⚪ C（低）</span>
-    </div>
-  </div>
-</div>
-
-<div id="view-analytics" class="view">
-  <div class="kpi-row" id="kpi-row2"></div>
-  <div class="charts-grid">
-    <div class="chart-card"><div class="chart-title">🌲 本部別 採用状況</div><div class="chart-wrap"><canvas id="chart-honbu"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">🦊 職種別 必要人数</div><div class="chart-wrap"><canvas id="chart-shokushu"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">⭐ 優先度別 分布</div><div class="chart-wrap"><canvas id="chart-priority"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">📱 採用媒体別 件数</div><div class="chart-wrap"><canvas id="chart-media"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">🌸 ステータス別 件数</div><div class="chart-wrap"><canvas id="chart-status"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">🎋 レイヤー別 必要人数</div><div class="chart-wrap"><canvas id="chart-layer"></canvas></div></div>
-    <div class="chart-card" style="grid-column:1/-1"><div class="chart-title">💰 本部別 暫定予算（万円）</div><div class="chart-wrap" style="height:180px"><canvas id="chart-budget"></canvas></div></div>
-  </div>
-</div>
-
+  <div class="proj-list" id="proj-list"></div>
+  <div id="calendar-view" style="display:none"></div>
 </main>
 
-<div class="modal-overlay" id="modal">
+<div class="modal-bg" id="task-modal-bg" onclick="onBgClick(event,'task-modal-bg')">
   <div class="modal">
-    <div class="modal-animal" id="modal-animal">🐣</div>
-    <div class="modal-title" id="modal-title">採用計画を追加</div>
-    <div class="modal-grid">
-      <div class="form-group"><label class="form-label">🌲 本部</label><select class="form-select" id="m-honbu" onchange="cascadeJigyou()"></select></div>
-      <div class="form-group"><label class="form-label">🌿 事業</label><select class="form-select" id="m-jigyou" onchange="cascadeShokushu()"></select></div>
-      <div class="form-group"><label class="form-label">🦊 職種</label><select class="form-select" id="m-shokushu"></select></div>
-      <div class="form-group"><label class="form-label">🎋 レイヤー</label><select class="form-select" id="m-layer"></select></div>
-      <div class="form-group"><label class="form-label">📱 採用媒体</label><select class="form-select" id="m-media"></select></div>
-      <div class="form-group"><label class="form-label">📅 採用期限</label><input type="date" class="form-input" id="m-deadline"></div>
-      <div class="form-group"><label class="form-label">👤 必要人数</label><input type="number" class="form-input" id="m-needed" min="1" value="1" oninput="updateBudgetPreview()"></div>
-      <div class="form-group"><label class="form-label">✅ 現在採用人数</label><input type="number" class="form-input" id="m-current" min="0" value="0"></div>
-      <div class="form-group"><label class="form-label">🌸 採用ステータス</label><select class="form-select" id="m-status"></select></div>
-      <div class="form-group"><label class="form-label">⭐ 優先度</label><select class="form-select" id="m-priority"><option>S</option><option>A</option><option>B</option><option>C</option></select></div>
-      <div class="form-group"><label class="form-label">💰 想定CPA（万円）</label><input type="number" class="form-input" id="m-cpa" min="0" value="50" oninput="updateBudgetPreview()"></div>
-      <div class="form-group"><label class="form-label">📊 暫定予算（自動計算）</label><input type="text" class="form-input" id="m-budget" readonly style="background:var(--cream2)"></div>
-      <div class="form-group full"><label class="form-label">📝 備考</label><textarea class="form-textarea" id="m-note" placeholder="備考・アクション等…"></textarea></div>
+    <div class="modal-title" id="task-modal-title">タスクを追加</div>
+    <div class="field">
+      <label>プロジェクト名</label>
+      <input id="f-proj-display" disabled style="color:var(--text2);background:var(--surface2)">
     </div>
-    <div class="modal-actions">
-      <button class="btn btn-danger" id="btn-delete" onclick="deleteRecord()" style="display:none">🗑️ 削除</button>
-      <button class="btn btn-ghost" onclick="closeModal()">キャンセル</button>
-      <button class="btn btn-primary" onclick="saveRecord()">🐾 保存</button>
+    <div class="field"><label>タスク名 *</label><input id="f-task" placeholder="例：かわいいイラストをあつめる"></div>
+    <div class="field"><label>今のじょうたい</label>
+      <select id="f-status">
+        <option value="not_started">💤 未着手</option>
+        <option value="in_progress">🌱 進行中</option>
+        <option value="waiting">⏳ 待ち・確認中</option>
+        <option value="done">✨ 完了</option>
+        <option value="blocked">🚧 ブロック中</option>
+      </select>
     </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="master-modal">
-  <div class="modal master-modal">
-    <div class="modal-animal">⚙️</div>
-    <div class="modal-title">項目マスターを編集</div>
-    <div id="master-body"></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeMasterModal()">とじる</button>
-    </div>
-  </div>
-</div>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyApL-Esb5ZdAjtQrDAhwcPiQd7PkPxjPGw",
-    authDomain: "jinnji-59e11.firebaseapp.com",
-    projectId: "jinnji-59e11",
-    storageBucket: "jinnji-59e11.firebasestorage.app",
-    messagingSenderId: "500523376767",
-    appId: "1:500523376767:web:d3fa7213775149e4771f4a"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  const today = new Date(); today.setHours(0,0,0,0);
-  window.records = [];
-  window.editingId = null;
-  window.calYear = today.getFullYear();
-  window.calMonth = today.getMonth();
-  window.charts = {};
-
-  window.master = {
-    honbuMap: {
-      '経営企画本部': { '全社共通': ['経営企画','IR・広報','法務','情報システム'], '新規事業室': ['新規事業企画','リサーチャー'] },
-      '技術本部': { 'DX推進': ['フロントエンドエンジニア','バックエンドエンジニア','データエンジニア','SRE'], 'HR Tech': ['エンジニア','PM','データサイエンティスト'], 'Fintech': ['エンジニア','セキュリティエンジニア'] },
-      'マーケティング本部': { 'ブランド事業': ['ブランドマネージャー','コピーライター','デザイナー'], 'デジタルマーケ': ['SEO担当','広告運用','アナリスト'] },
-      'セールス本部': { '既存事業': ['フィールドセールス','インサイドセールス','CS'], '新規開拓': ['フィールドセールス','パートナーセールス'] },
-      'コーポレート本部': { '全社共通': ['人事','経理・財務','法務','総務'] }
-    },
-    layers: ['新卒','第二新卒','中途（一般）','シニア','マネージャー','ディレクター','役員'],
-    media: ['Wantedly','LinkedIn','Indeed','Green','doda','リクナビNEXT','マイナビ転職','エージェント','リファラル','自社HP'],
-    statuses: ['採用中','計画中','達成','期限超過','保留']
-  };
-
-  function getSample() {
-    const d = off => { const dt=new Date(); dt.setDate(dt.getDate()+off); return dt.toISOString().split('T')[0]; };
-    return [
-      {id:1,honbu:'技術本部',jigyou:'DX推進',shokushu:'フロントエンドエンジニア',layer:'中途（一般）',media:'LinkedIn',deadline:d(14),needed:3,current:1,status:'採用中',priority:'S',cpa:80,note:'React経験者優先'},
-      {id:2,honbu:'マーケティング本部',jigyou:'デジタルマーケ',shokushu:'アナリスト',layer:'シニア',media:'エージェント',deadline:d(30),needed:2,current:0,status:'採用中',priority:'A',cpa:120,note:''},
-      {id:3,honbu:'セールス本部',jigyou:'既存事業',shokushu:'フィールドセールス',layer:'中途（一般）',media:'doda',deadline:d(45),needed:5,current:3,status:'採用中',priority:'A',cpa:50,note:'関西エリア'},
-      {id:4,honbu:'コーポレート本部',jigyou:'全社共通',shokushu:'人事',layer:'マネージャー',media:'Wantedly',deadline:d(60),needed:1,current:0,status:'計画中',priority:'B',cpa:100,note:''},
-      {id:5,honbu:'技術本部',jigyou:'HR Tech',shokushu:'PM',layer:'ディレクター',media:'LinkedIn',deadline:d(7),needed:1,current:0,status:'採用中',priority:'S',cpa:150,note:'即戦力必須'},
-      {id:6,honbu:'技術本部',jigyou:'Fintech',shokushu:'エンジニア',layer:'中途（一般）',media:'Green',deadline:d(90),needed:2,current:2,status:'達成',priority:'C',cpa:60,note:''},
-      {id:7,honbu:'経営企画本部',jigyou:'全社共通',shokushu:'法務',layer:'シニア',media:'エージェント',deadline:d(-5),needed:1,current:0,status:'期限超過',priority:'S',cpa:90,note:'早急対応要'},
-      {id:8,honbu:'セールス本部',jigyou:'新規開拓',shokushu:'フィールドセールス',layer:'第二新卒',media:'マイナビ転職',deadline:d(20),needed:4,current:1,status:'採用中',priority:'B',cpa:30,note:'テレワーク可'},
-    ];
-  }
-
-  onSnapshot(doc(db, "mori_recruit_v3", "current_data"), (docSnap) => {
-    if (docSnap.exists()) {
-      window.records = docSnap.data().records || [];
-    } else {
-      window.records = getSample();
-      window.saveAll();
-    }
-    syncCurrentTabDisplay();
-  });
-
-  onSnapshot(doc(db, "mori_recruit_v3", "master_data"), (docSnap) => {
-    if (docSnap.exists()) {
-      window.master = docSnap.data().master || window.master;
-    } else {
-      window.saveAll();
-    }
-  });
-
-  window.saveAll = async function() {
-    try {
-      await setDoc(doc(db, "mori_recruit_v3", "current_data"), { records: window.records });
-      await setDoc(doc(db, "mori_recruit_v3", "master_data"), { master: window.master });
-      document.getElementById('last-updated').textContent = new Date().toLocaleTimeString('ja-JP');
-    } catch (e) {
-      console.error("Firestore同期書き込みエラー:", e);
-    }
-  }
-
-  function syncCurrentTabDisplay() {
-    window.refresh();
-    if(document.getElementById('view-calendar').classList.contains('active')) window.renderCalendar();
-    if(document.getElementById('view-analytics').classList.contains('active')) window.renderCharts();
-    document.getElementById('last-updated').textContent = new Date().toLocaleTimeString('ja-JP');
-  }
-
-  window.daysUntil = function(dl){ const d=new Date(dl); d.setHours(0,0,0,0); return Math.ceil((d-today)/86400000); }
-  window.fmt = function(n){ return Number(n||0).toLocaleString('ja-JP'); }
-  window.fmtB = function(cpa,n){ return window.fmt((cpa||0)*(n||0))+'万円'; }
-  window.nextId = function(){ return window.records.length?Math.max(...window.records.map(r=>r.id))+1:1; }
-  window.daysClass = function(d){ return d<0?'days-danger':d<=14?'days-warn':'days-ok'; }
-  window.statusClass = function(s){ return {採用中:'s-active',計画中:'s-hold',達成:'s-done',期限超過:'s-danger',保留:'s-warn'}[s]||'s-hold'; }
-  window.statusIcon = function(s){ return {採用中:'🐾',計画中:'🌱',達成:'🎉',期限超過:'🚨',保留:'😴'}[s]||''; }
-  window.priClass = function(p){ return 'pri-'+p; }
-  window.animalForPri = function(p){ return {S:'🦁',A:'🦊',B:'🐿️',C:'🐰'}[p]||'🐾'; }
-
-  window.peopleCells = function(needed, current) {
-    needed=parseInt(needed)||0; current=parseInt(current)||0;
-    const remain=Math.max(needed-current,0);
-    let icons='';
-    for(let i=0;i<Math.min(needed,8);i++) icons+=`<span class="${i<current?'p-filled':'p-empty'}">👤</span>`;
-    if(needed>8) icons+=`<span style="font-size:10px;color:var(--text2)">+${needed-8}</span>`;
-    return `<div class="people-bar"><div class="people-icons">${icons}</div><div class="people-nums">${current}/${needed}（残${remain}）</div></div>`;
-  }
-
-  window.getFiltered = function() {
-    const q=(document.querySelector('.search-box')?.value||'').toLowerCase();
-    const fS=document.getElementById('f-status')?.value||'';
-    const fP=document.getElementById('f-priority')?.value||'';
-    return window.records.filter(r=>{
-      if(fS && r.status!==fS) return false;
-      if(fP && r.priority!==fP) return false;
-      if(q && !JSON.stringify(r).toLowerCase().includes(q)) return false;
-      return true;
-    });
-  }
-
-  window.renderKPIs = function(targetId) {
-    const rs=window.records;
-    const totalN=rs.reduce((a,r)=>a+(r.needed||0),0);
-    const totalC=rs.reduce((a,r)=>a+(r.current||0),0);
-    const overdue=rs.filter(r=>window.daysUntil(r.deadline)<0&&r.status!=='達成').length;
-    const urgent=rs.filter(r=>{const d=window.daysUntil(r.deadline);return d>=0&&d<=14&&r.status!=='達成';}).length;
-    const budget=rs.reduce((a,r)=>a+(r.cpa||0)*(r.needed||0),0);
-    const done=rs.filter(r=>r.status==='達成').length;
-    document.getElementById(targetId).innerHTML=`
-      <div class="kpi-card kpi-sage" data-animal="🌲"><div class="kpi-label">総計画数</div><div class="kpi-value">${rs.length}</div><div class="kpi-sub">件のぼうけん</div></div>
-      <div class="kpi-card kpi-peach" data-animal="🦊"><div class="kpi-label">必要採用総数</div><div class="kpi-value">${totalN}</div><div class="kpi-sub">人のなかま</div></div>
-      <div class="kpi-card kpi-sage" data-animal="🐾"><div class="kpi-label">採用済み</div><div class="kpi-value">${totalC}</div><div class="kpi-sub">${totalN?Math.round(totalC/totalN*100):0}% たっせい</div></div>
-      <div class="kpi-card kpi-blush" data-animal="🚨"><div class="kpi-label">期限超過</div><div class="kpi-value">${overdue}</div><div class="kpi-sub">件 はやく！</div></div>
-      <div class="kpi-card kpi-yellow" data-animal="⏰"><div class="kpi-label">14日以内</div><div class="kpi-value">${urgent}</div><div class="kpi-sub">件 がんばれ</div></div>
-      <div class="kpi-card kpi-sky" data-animal="🎉"><div class="kpi-label">達成済み</div><div class="kpi-value">${done}</div><div class="kpi-sub">件 やったね！</div></div>
-      <div class="kpi-card kpi-lav" data-animal="💰"><div class="kpi-label">暫定総予算</div><div class="kpi-value">${window.fmt(budget)}</div><div class="kpi-sub">万円</div></div>
-    `;
-  }
-
-  const HONBU_ANIMALS = { '経営企画本部':'🦉','技術本部':'🦫','マーケティング本部':'🦊','セールス本部':'🐺','コーポレート本部':'🐻' };
-  const JIGYOU_ANIMALS = ['🌿','🍀','🌸','🍃','🌾','🌱'];
-
-  window.renderAccordion = function() {
-    const filtered = window.getFiltered();
-    const wrap = document.getElementById('accordion-wrap');
-
-    const honbuList = [...new Set(window.records.map(r=>r.honbu))];
-    if(!honbuList.length){ wrap.innerHTML='<div style="text-align:center;padding:40px;color:var(--text2)">🌱 まだデータがありません</div>'; return; }
-
-    wrap.innerHTML = honbuList.map(honbu => {
-      const honbuRecs = filtered.filter(r=>r.honbu===honbu);
-      const jigyouList = [...new Set(window.records.filter(r=>r.honbu===honbu).map(r=>r.jigyou))];
-      const totalN = honbuRecs.reduce((a,r)=>a+(r.needed||0),0);
-      const totalC = honbuRecs.reduce((a,r)=>a+(r.current||0),0);
-      const animal = HONBU_ANIMALS[honbu]||'🌲';
-
-      const jigyouBlocks = jigyouList.map((jigyou,ji) => {
-        const jiRecs = honbuRecs.filter(r=>r.jigyou===jigyou);
-        const jiN = jiRecs.reduce((a,r)=>a+(r.needed||0),0);
-        const jiC = jiRecs.reduce((a,r)=>a+(r.current||0),0);
-        const jAnimal = JIGYOU_ANIMALS[ji%JIGYOU_ANIMALS.length];
-
-        const tableRows = jiRecs.length ? jiRecs.map(r=>{
-          const days=window.daysUntil(r.deadline);
-          return `<tr>
-            <td><span class="chip chip-shokushu">🔹 ${r.shokushu}</span></td>
-            <td><span class="chip chip-layer">${r.layer}</span></td>
-            <td><span class="chip chip-media">${r.media}</span></td>
-            <td style="font-family:'JetBrains Mono';font-size:11px">${r.deadline}</td>
-            <td><span class="days-pill ${window.daysClass(days)}">${days>=0?days+'日':'超過'+(days*-1)+'日'}</span></td>
-            <td>${window.peopleCells(r.needed,r.current)}</td>
-            <td><span class="status-chip ${window.statusClass(r.status)}">${window.statusIcon(r.status)} ${r.status}</span></td>
-            <td><span class="pri ${window.priClass(r.priority)}">${window.animalForPri(r.priority)}【${r.priority}】</span></td>
-            <td class="budget-cell">${window.fmt(r.cpa)}万</td>
-            <td class="budget-cell">${window.fmtB(r.cpa,r.needed)}</td>
-            <td class="note-cell" title="${r.note||''}">${r.note||'—'}</td>
-            <td><button class="btn btn-ghost" style="padding:3px 10px;font-size:11px;border-radius:100px" onclick="openEditModal(${r.id})">✏️</button></td>
-          </tr>`;
-        }).join('') : `<tr class="empty-row"><td colspan="12">🌱 この事業の採用計画はありません</td></tr>`;
-
-        return `
-          <div class="sub-acc-item">
-            <div class="sub-acc-header" onclick="toggleSubAcc(this)">
-              <div style="display:flex;align-items:center;gap:8px">
-                <span>${jAnimal}</span>
-                <span>${jigyou}</span>
-                ${jiRecs.length?`<span class="acc-count">${jiRecs.length}</span>`:''}
-                <span class="acc-kpi-mini"><span>必要 ${jiN}人</span><span>/ 採用 ${jiC}人</span></span>
-              </div>
-              <span class="acc-arrow">▶</span>
-            </div>
-            <div class="sub-acc-body">
-              <div class="acc-table-wrap">
-                <table class="acc-table">
-                  <thead><tr>
-                    <th>職種</th><th>レイヤー</th><th>採用媒体</th><th>採用期限</th><th>残日数</th>
-                    <th>必要/現在/残</th><th>ステータス</th><th>優先度</th>
-                    <th>CPA</th><th>暫定予算</th><th>備考</th><th></th>
-                  </tr></thead>
-                  <tbody>${tableRows}</tbody>
-                </table>
-              </div>
-            </div>
-          </div>`;
-      }).join('');
-
-      return `
-        <div class="accordion-item">
-          <div class="accordion-header" onclick="toggleAcc(this)">
-            <div class="acc-left">
-              <span class="acc-icon">${animal}</span>
-              <span>${honbu}</span>
-              ${honbuRecs.length?`<span class="acc-count">${honbuRecs.length}</span>`:''}
-              <span class="acc-kpi-mini" style="font-size:11px;color:var(--text2)">
-                <span>必要 ${totalN}人</span><span>/ 採用 ${totalC}人</span>
-              </span>
-            </div>
-            <span class="acc-arrow">▶</span>
-          </div>
-          <div class="accordion-body">${jigyouBlocks}</div>
-        </div>`;
-    }).join('');
-  }
-
-  window.toggleAcc = function(header) { header.classList.toggle('open'); header.nextElementSibling.classList.toggle('open'); }
-  window.toggleSubAcc = function(header) { header.classList.toggle('open'); header.nextElementSibling.classList.toggle('open'); }
-
-  window.populateModalSelects = function() {
-    const honbus = Object.keys(window.master.honbuMap);
-    const fH = document.getElementById('m-honbu');
-    const curH = fH.value;
-    fH.innerHTML = honbus.map(h=>`<option>${h}</option>`).join('');
-    if(curH && honbus.includes(curH)) fH.value=curH;
-    window.cascadeJigyou();
-    window.populateSelect('m-layer',  window.master.layers);
-    window.populateSelect('m-media',  window.master.media);
-    window.populateSelect('m-status', window.master.statuses);
-  }
-  window.populateSelect = function(id, arr) {
-    const el=document.getElementById(id), cur=el.value;
-    el.innerHTML=arr.map(v=>`<option>${v}</option>`).join('');
-    if(arr.includes(cur)) el.value=cur;
-  }
-  window.cascadeJigyou = function() {
-    const h=document.getElementById('m-honbu').value;
-    const jigyous=Object.keys(window.master.honbuMap[h]||{});
-    window.populateSelect('m-jigyou', jigyous);
-    window.cascadeShokushu();
-  }
-  window.cascadeShokushu = function() {
-    const h=document.getElementById('m-honbu').value;
-    const j=document.getElementById('m-jigyou').value;
-    const sks=(window.master.honbuMap[h]||{})[j]||[];
-    window.populateSelect('m-shokushu', sks);
-  }
-  window.updateBudgetPreview = function() {
-    const cpa=parseFloat(document.getElementById('m-cpa').value)||0;
-    const n=parseInt(document.getElementById('m-needed').value)||0;
-    document.getElementById('m-budget').value=window.fmtB(cpa,n);
-  }
-
-  window.openAddModal = function() {
-    window.editingId=null;
-    document.getElementById('modal-animal').textContent='🐣';
-    document.getElementById('modal-title').textContent='新しいなかまをさがそう';
-    document.getElementById('btn-delete').style.display='none';
-    document.getElementById('m-deadline').value=new Date().toISOString().split('T')[0];
-    document.getElementById('m-needed').value=1;
-    document.getElementById('m-current').value=0;
-    document.getElementById('m-cpa').value=50;
-    document.getElementById('m-note').value='';
-    window.populateModalSelects();
-    window.updateBudgetPreview();
-    document.getElementById('modal').classList.add('open');
-  }
-  window.openEditModal = function(id) {
-    window.editingId=id;
-    const r=window.records.find(x=>x.id===id); if(!r) return;
-    document.getElementById('modal-animal').textContent=window.animalForPri(r.priority);
-    document.getElementById('modal-title').textContent='計画を編集する';
-    document.getElementById('btn-delete').style.display='inline-flex';
-    window.populateModalSelects();
-    document.getElementById('m-honbu').value=r.honbu; window.cascadeJigyou();
-    document.getElementById('m-jigyou').value=r.jigyou; window.cascadeShokushu();
-    document.getElementById('m-shokushu').value=r.shokushu;
-    document.getElementById('m-layer').value=r.layer;
-    document.getElementById('m-media').value=r.media;
-    document.getElementById('m-deadline').value=r.deadline;
-    document.getElementById('m-needed').value=r.needed;
-    document.getElementById('m-current').value=r.current;
-    document.getElementById('m-status').value=r.status;
-    document.getElementById('m-priority').value=r.priority;
-    document.getElementById('m-cpa').value=r.cpa;
-    document.getElementById('m-note').value=r.note||'';
-    window.updateBudgetPreview();
-    document.getElementById('modal').classList.add('open');
-  }
-  window.closeModal = function(){ document.getElementById('modal').classList.remove('open'); }
-
-  window.saveRecord = async function() {
-    const r={
-      honbu:    document.getElementById('m-honbu').value,
-      jigyou:   document.getElementById('m-jigyou').value,
-      shokushu: document.getElementById('m-shokushu').value,
-      layer:    document.getElementById('m-layer').value,
-      media:    document.getElementById('m-media').value,
-      deadline: document.getElementById('m-deadline').value,
-      needed:   parseInt(document.getElementById('m-needed').value)||1,
-      current:  parseInt(document.getElementById('m-current').value)||0,
-      status:   document.getElementById('m-status').value,
-      priority: document.getElementById('m-priority').value,
-      cpa:      parseFloat(document.getElementById('m-cpa').value)||0,
-      note:     document.getElementById('m-note').value,
-    };
-    if(window.editingId){ const i=window.records.findIndex(x=>x.id===window.editingId); if(i>=0) window.records[i]={...window.records[i],...r}; }
-    else { r.id=window.nextId(); window.records.push(r); }
-    await window.saveAll(); 
-    window.closeModal();
-  }
-  window.deleteRecord = async function() {
-    if(!window.editingId||!confirm('この計画を削除しますか？🗑️')) return;
-    window.records=window.records.filter(r=>r.id!==window.editingId);
-    await window.saveAll(); 
-    window.closeModal();
-  }
-
-  window.openMasterModal = function() { window.renderMasterBody(); document.getElementById('master-modal').classList.add('open'); }
-  window.closeMasterModal = function(){ document.getElementById('master-modal').classList.remove('open'); }
-
-  window.renderMasterBody = function() {
-    let html = '';
-    const honbus = Object.keys(window.master.honbuMap);
-    html += `<div class="master-section">
-      <div class="master-sec-title">🌲 本部一覧</div>
-      <div class="master-items">
-        ${honbus.map(h=>`<span class="master-tag">${h}<button class="master-tag-del" onclick="deleteMasterHonbu('${h}')">×</button></span>`).join('')}
+    <div class="field"><label>つぎにやること</label><textarea id="f-next" placeholder="次の一歩をかこう"></textarea></div>
+    <div class="field"><label>📅 期日（しめきり）</label><input type="date" id="f-due"></div>
+    <div class="field"><label>メモ・まめちしき</label><textarea id="f-note" placeholder="補足や残しておきたいこと"></textarea></div>
+    <div class="field">
+      <label>だれがやる？（担当者）</label>
+      <input id="f-owner" list="owner-list" placeholder="おなまえを入力" oninput="onOwnerInput()">
+      <datalist id="owner-list"></datalist>
+      
+      <div class="animal-select-wrap" style="margin-top: 8px;">
+        <label style="margin:0; font-size:11px;">どうぶつ姿（全24種）：</label>
+        <div class="picker-grid" id="animal-picker"></div>
       </div>
-      <div class="master-add-row" style="margin-top:8px">
-        <input class="master-add-input" id="ms-honbu-input" placeholder="本部名を追加…">
-        <button class="master-add-btn" onclick="addMasterHonbu()">追加</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('task-modal-bg')">やめる</button>
+      <button class="btn-save"   onclick="saveTask()">できた</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="proj-modal-bg" onclick="onBgClick(event,'proj-modal-bg')">
+  <div class="modal">
+    <div class="modal-title" id="proj-modal-title">新しいプロジェクト</div>
+    <div class="field">
+      <label>プロジェクトのお名前 *</label>
+      <input id="f-proj-name" placeholder="例：秋のもりもりキャンペーン">
+    </div>
+    
+    <div class="field">
+      <label>お部屋のアイコン 🏕（全28種！）</label>
+      <div class="picker-grid" id="proj-icon-picker"></div>
+    </div>
+
+    <div class="field">
+      <label>お部屋の背景カラー 🎨 (全12色)</label>
+      <div class="picker-grid" id="proj-color-picker" style="gap: 10px; padding: 10px;"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('proj-modal-bg')">やめる</button>
+      <button class="btn-save"   onclick="saveProject()">つくる</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STATUS = {
+  not_started: { label:'未着手',       dot:'💤', cls:'s-not_started' },
+  in_progress: { label:'進行中',       dot:'🌱', cls:'s-in_progress' },
+  view_waiting:{ label:'待ち・確認中', dot:'⏳', cls:'s-waiting' }, /* 互換調整用 */
+  waiting:     { label:'待ち・確認中', dot:'⏳', cls:'s-waiting' },
+  done:        { label:'完了',         dot:'✨', cls:'s-done' },
+  blocked:     { label:'ブロック中',   dot:'🚧', cls:'s-blocked' },
+};
+
+const ANIMALS = ['🐰','🐻','🐱','🐶','🦊','🦁','🐹','🐼','🐨','🐥','🐸','🐵','🦄','🐗','🐺','🐮','🦁','🐯','🦒','🦫','🦦','🦭','🦖','🦈'];
+const PROJ_ICONS = ['📂','⛺','🚀','🎨','📢','🎁','🍋','🍎','⭐','🍀','🎉','🔑','🍙','🛸','📈','💻','🔥','🔮','💎','🧸','👒','☕','🧩','🏎️','🧁','🥷','🦖','🏝️'];
+
+const PROJ_COLORS = [
+  { key: 'default',    code: '#ffffff' },
+  { key: 'strawberry', code: '#fff0f2' },
+  { key: 'cherry',     code: '#ffece9' },
+  { key: 'orange',     code: '#ffeedd' },
+  { key: 'lemon',      code: '#fff9cc' },
+  { key: 'melon',      code: '#e2f7eb' },
+  { key: 'mint',       code: '#e0f9f6' },
+  { key: 'soda',       code: '#e2effa' },
+  { key: 'sky',        code: '#dcebff' },
+  { key: 'grape',      code: '#eee2fa' },
+  { key: 'lavender',   code: '#f9e2fa' },
+  { key: 'cocoa',      code: '#f1e9de' },
+  { key: 'deepforest', code: '#e4ebd9' }
+];
+
+let ownerAnimals = {}; 
+let tasks    = {};
+let projects = {};
+let chats    = {}; // { projectKey: { chatKey: { name, animal, message, timestamp } } }
+let openProjects = new Set();
+let allOpen = false;
+let view = 'all';
+let editingTaskKey   = null;
+let editingProjKey   = null;
+let modalProjKey     = null;
+let selectedAnimal   = '🐰';
+let selectedProjIcon = '📂';
+let selectedProjColor = 'default';
+let db = null;
+
+let undoStack = [];
+const MAX_UNDO_DEPTH = 5;
+
+function pushToUndoStack() {
+  undoStack.push({
+    tasks: JSON.parse(JSON.stringify(tasks)),
+    projects: JSON.parse(JSON.stringify(projects)),
+    ownerAnimals: JSON.parse(JSON.stringify(ownerAnimals))
+  });
+  if (undoStack.length > MAX_UNDO_DEPTH) undoStack.shift();
+}
+
+async function triggerUndo() {
+  if (undoStack.length === 0) { showToast("戻れる履歴がありません 🍃"); return; }
+  const prev = undoStack.pop();
+  tasks = prev.tasks; projects = prev.projects; ownerAnimals = prev.ownerAnimals;
+  if (db) {
+    try {
+      await db.ref('tasks').set(tasks);
+      await db.ref('projects').set(projects);
+      await db.ref('ownerAnimals').set(ownerAnimals);
+    } catch (e) { console.error(e); }
+  }
+  showToast("⏰ ひとつ前の状態に戻しました！"); renderAll();
+}
+
+// ── 🐈‍⬛ 隠しコマンド（Ctrl + Shift + Enter） ──
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'Enter') {
+    e.preventDefault();
+    toggleGiantCat();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !document.querySelector('.modal-bg.open')) {
+    e.preventDefault(); triggerUndo();
+  }
+});
+
+function toggleGiantCat() {
+  const cat = document.getElementById('giant-cat');
+  cat.classList.toggle('reveal');
+  if (cat.classList.contains('reveal')) {
+    showToast("🙀 【警告】巨大なネコがあらわれた！！！");
+  } else {
+    showToast("🌲 ネコは満足して森へ帰っていきました。");
+  }
+}
+
+// ── 🔮 おみくじ占い機能 ──
+function drawOmikuji() {
+  const lucks = ["🌟 超大吉", "✨ 大吉", "🌱 中吉", "🍂 小吉", "☁️ 吉", "🍊 みかん吉"];
+  const actions = ["どんぐりを3個拾う", "ウサギ姿の人に挨拶する", "お祭りモードを3回連打する", "お茶をのんで一息つく", "完了タスクを眺めてニヤニヤする", "深呼吸を3回する"];
+  
+  const randomLuck = lucks[Math.floor(Math.random() * lucks.length)];
+  const randomAnimal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+  const randomAction = actions[Math.floor(Math.random() * actions.length)];
+  
+  alert(`🔮 もりの占い結果 🔮\n\n【今日の運勢】 ${randomLuck}\n【ラッキーどうぶつ】 ${randomAnimal}\n【ラッキーアクション】 ${randomAction} と吉！`);
+}
+
+function cryAnimal(emoji, text) { showToast(`${emoji} 「${text}」`); }
+
+function startAnimalParade() {
+  const container = document.getElementById('parade-container');
+  showToast("🏮 ワッショイ！どうぶつ大行進のはじまりだー！ 🎉");
+  for (let i = 0; i < 15; i++) {
+    setTimeout(() => {
+      const animal = document.createElement('div'); animal.className = 'parade-animal';
+      animal.innerText = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+      animal.style.top = (Math.random() * 85 + 5) + 'vh';
+      const duration = Math.random() * 1.2 + 1.8; animal.style.animationDuration = duration + 's';
+      container.appendChild(animal); setTimeout(() => animal.remove(), duration * 1000);
+    }, i * 120);
+  }
+}
+
+function initPickers() {
+  document.getElementById('animal-picker').innerHTML = ANIMALS.map(a => `<button type="button" class="picker-btn" data-animal="${a}" onclick="selectAnimal('${a}')">${a}</button>`).join('');
+  document.getElementById('proj-icon-picker').innerHTML = PROJ_ICONS.map(i => `<button type="button" class="picker-btn" data-picon="${i}" onclick="selectProjIcon('${i}')">${i}</button>`).join('');
+  document.getElementById('proj-color-picker').innerHTML = PROJ_COLORS.map(c => `<div class="color-circle" data-pcolor="${c.key}" style="background:${c.code}" onclick="selectProjColor('${c.key}')"></div>`).join('');
+}
+
+function selectAnimal(a) {
+  selectedAnimal = a;
+  document.querySelectorAll('#animal-picker .picker-btn').forEach(btn => btn.classList.toggle('selected', btn.getAttribute('data-animal') === a));
+}
+function selectProjIcon(i) {
+  selectedProjIcon = i;
+  document.querySelectorAll('#proj-icon-picker .picker-btn').forEach(btn => btn.classList.toggle('selected', btn.getAttribute('data-picon') === i));
+}
+function selectProjColor(cKey) {
+  selectedProjColor = cKey;
+  document.querySelectorAll('#proj-color-picker .color-circle').forEach(div => div.classList.toggle('selected', div.getAttribute('data-pcolor') === cKey));
+}
+
+function onOwnerInput() {
+  const name = document.getElementById('f-owner').value.trim();
+  if(name && ownerAnimals[name]) { selectAnimal(ownerAnimals[name]); } 
+  else if (name) {
+    let code = 0; for (let i = 0; i < name.length; i++) code += name.charCodeAt(i);
+    selectAnimal(ANIMALS[code % ANIMALS.length]);
+  }
+}
+
+function getAnimalByName(name) {
+  if (!name) return '🐾';
+  if (ownerAnimals[name]) return ownerAnimals[name];
+  let code = 0; for (let i = 0; i < name.length; i++) code += name.charCodeAt(i);
+  return ANIMALS[code % ANIMALS.length];
+}
+
+function initFirebase() {
+  initPickers();
+  if (FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') {
+    document.getElementById('setup-banner').style.display = 'block';
+    setSyncState('err', 'デモモード 🐾'); useDemoData(); return;
+  }
+  try {
+    firebase.initializeApp(FIREBASE_CONFIG); db = firebase.database();
+    db.ref('.info/connected').on('value', s => {
+      if (s.val()) setSyncState('ok',  'みんなと同期中 🌍');
+      else         setSyncState('err', '電波をさがし中… 📶');
+    });
+    db.ref('ownerAnimals').on('value', s => { ownerAnimals = s.val() || {}; });
+    db.ref('projects').on('value', s => { projects = s.val() || {}; renderAll(); });
+    db.ref('tasks').on('value',    s => { tasks    = s.val() || {}; renderAll(); });
+    db.ref('chats').on('value',    s => { chats    = s.val() || {}; renderAll(); });
+  } catch(e) { setSyncState('err','エラー'); console.error(e); }
+}
+
+function setSyncState(state, text) {
+  const dot = document.getElementById('sync-dot');
+  dot.className = 'sync-dot' + (state==='ok' ? '' : state==='err' ? ' err' : ' warn');
+  document.getElementById('sync-text').textContent = text;
+}
+
+function useDemoData() {
+  projects = {
+    p1: { name:'もぐもぐSNS広告リニューアル', icon:'🎨', color:'strawberry', createdAt: Date.now()-3000 },
+    p2: { name:'どんぐりLP改修',             icon:'⛺', color:'orange', createdAt: Date.now()-2000 },
+  };
+  tasks = {
+    t1: { project:'p1', task:'かわいいイラストの収集', status:'in_progress', nextAction:'ウサギさんに相談する', note:'パステルカラー多めで！', owner:'田中', createdAt:Date.now()-500 },
+    t2: { project:'p1', task:'ターゲット層の調査',     status:'done',        nextAction:'完了',             note:'',                   owner:'佐藤', createdAt:Date.now()-400 },
+    t3: { project:'p2', task:'どんぐりボタンの調整',   status:'not_started', nextAction:'色を茶色にする',     note:'',                   owner:'田中', createdAt:Date.now()-100 },
+  };
+  chats = {
+    p1: {
+      c1: { name: '田中', animal: '🐰', message: 'イラストあつめてます！パステル調がいい感じ。', timestamp: Date.now() - 100000 }
+    }
+  };
+  ownerAnimals = { '田中': '🐰', '佐藤': '🐱' }; openProjects = new Set(['p1','p2']); renderAll();
+}
+
+function renderAll() { renderSummary(); renderOwnerFilter(); if (view === 'calendar') renderCalendar(); else renderProjects(); }
+
+function renderSummary() {
+  const arr = Object.values(tasks);
+  const c = {not_started:0,in_progress:0,waiting:0,done:0,blocked:0};
+  arr.forEach(t => { if(c[t.status]!==undefined) c[t.status]++; });
+  document.getElementById('summary').innerHTML = `
+    <div class="sc"><div class="sc-label">📂 プロジェクト</div><div class="sc-num">${Object.keys(projects).length}</div></div>
+    <div class="sc"><div class="sc-label">📝 ぜんぶのタスク</div><div class="sc-num">${arr.length}</div></div>
+    <div class="sc"><div class="sc-label">🌱 進行中</div><div class="sc-num" style="color:var(--blue-tx)">${c.in_progress}</div></div>
+    <div class="sc"><div class="sc-label">⏳ まちあわせ</div><div class="sc-num" style="color:var(--amber-tx)">${c.waiting}</div></div>
+    <div class="sc"><div class="sc-label">✨ できた！</div><div class="sc-num" style="color:var(--green-tx)">${c.done}</div></div>
+    <div class="sc"><div class="sc-label">🚧 おや？</div><div class="sc-num" style="color:var(--red-tx)">${c.blocked}</div></div>
+  `;
+}
+
+function renderOwnerFilter() {
+  const owners = [...new Set(Object.values(tasks).map(t=>t.owner).filter(Boolean))].sort();
+  const sel = document.getElementById('filter-owner').value;
+  document.getElementById('filter-owner').innerHTML = '<option value="">だれのタスク？</option>' + owners.map(o=> `<option value="${esc(o)}"${o===sel?' selected':''}>${ownerAnimals[o]||'🐾'} ${esc(o)}</option>`).join('');
+  document.getElementById('owner-list').innerHTML = owners.map(o=>`<option value="${esc(o)}">`).join('');
+}
+
+function renderProjects() {
+  const search = document.getElementById('search').value.toLowerCase();
+  const fs     = document.getElementById('filter-status').value;
+  const fo     = document.getElementById('filter-owner').value;
+  const list = document.getElementById('proj-list');
+  const projEntries = Object.entries(projects).sort((a,b) => (a[1].createdAt||0)-(b[1].createdAt||0));
+
+  if (!projEntries.length) {
+    list.innerHTML = `<div class="empty-proj"><i class="ti ti-clipboard-off"></i><p>まだ部屋がありません</p><button class="btn-primary" style="margin:0 auto" onclick="openProjectModal()"><i class="ti ti-plus"></i> 部屋を作る</button></div>`; return;
+  }
+
+  let html = '';
+  for (const [pk, proj] of projEntries) {
+    let ptasks = Object.entries(tasks).filter(([,t]) => t.project === pk).map(([k,t]) => ({key:k,...t})).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+    if (fs) ptasks = ptasks.filter(t => t.status === fs);
+    if (fo) ptasks = ptasks.filter(t => t.owner  === fo);
+    if (view === 'mine' && fo) ptasks = ptasks.filter(t => t.owner === fo);
+    if (search) {
+      const s = search; const projMatch = proj.name.toLowerCase().includes(s);
+      if (!projMatch) ptasks = ptasks.filter(t => (t.task||'').toLowerCase().includes(s) || (t.nextAction||'').toLowerCase().includes(s));
+      if (!projMatch && !ptasks.length) continue;
+    }
+
+    const isOpen = openProjects.has(pk);
+    const totalCount = Object.values(tasks).filter(t=>t.project===pk).length;
+    const stCounts = {}; Object.values(tasks).filter(t=>t.project===pk).forEach(t=>{ stCounts[t.status]=(stCounts[t.status]||0)+1; });
+    const pills = Object.entries(stCounts).map(([s,n])=>`<span class="mini-pill badge ${STATUS[s]?.cls || 's-not_started'}">${STATUS[s]?.dot || '⬜'} ${n}</span>`).join('');
+    const pColorClass = proj.color ? `p-theme-${proj.color}` : 'p-theme-default';
+
+    // 💬 チャット履歴の生成
+    const pChats = Object.values(chats[pk] || {}).sort((a,b) => (a.timestamp||0)-(b.timestamp||0));
+    const chatHtml = pChats.map(c => `
+      <div class="chat-bubble">
+        <div class="chat-avatar">${c.animal || '🐾'}</div>
+        <div class="chat-content-box">
+          <div class="chat-meta">${esc(c.name)}</div>
+          <div class="chat-text">${esc(c.message)}</div>
+        </div>
+      </div>
+    `).join('');
+
+    html += `
+    <div class="proj-card ${pColorClass}${isOpen?' open':''}" id="pc-${pk}">
+      <div class="proj-header" onclick="toggleProject('${pk}')">
+        <span class="proj-chevron"><i class="ti ti-chevron-right"></i></span>
+        <span class="proj-name">${proj.icon||'📂'} ${esc(proj.name)}</span>
+        <div class="proj-meta">
+          <span class="proj-status-pills">${pills}</span>
+          <span class="proj-count">${totalCount}こ</span>
+        </div>
+        <div class="proj-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="openProjectModal('${pk}')" title="部屋をカスタムする"><i class="ti ti-edit"></i></button>
+          <button class="icon-btn" onclick="deleteProject('${pk}')" title="さよならする"><i class="ti ti-trash"></i></button>
+        </div>
+      </div>
+      <div class="task-table-wrap">
+        <div class="task-divider">
+        ${ptasks.length ? `
+        <table>
+          <thead><tr>
+            <th class="col-task">タスク名</th>
+            <th class="col-status">じょうたい</th>
+            <th class="col-next">つぎにやること</th>
+            <th class="col-note">メモ</th>
+            <th style="width:9%">期日</th>
+            <th class="col-owner">だれがやる？</th>
+            <th class="col-actions"></th>
+          </tr></thead>
+          <tbody>
+            ${ptasks.map(t => {
+              const st = STATUS[t.status]||STATUS.not_started;
+              const isDoneClass = t.status === 'done' ? 'task-done-row' : '';
+              const todayStr2 = toDateStr(new Date());
+              const dueBadge = t.due ? (() => {
+                const isOver = t.due < todayStr2 && t.status !== 'done';
+                const isTdy  = t.due === todayStr2;
+                return `<span class="due-badge ${isOver?'overdue':isTdy?'today-due':''}">${isOver?'⚠':isTdy?'📌':'📅'} ${t.due}</span>`;
+              })() : '—';
+              return `<tr class="${isDoneClass}">
+                <td class="task-name" title="${esc(t.task)}">📌 ${esc(t.task)}</td>
+                <td><span class="badge ${st.cls}">${st.dot} ${st.label}</span></td>
+                <td class="multiline">${esc(t.nextAction||'—')}</td>
+                <td class="multiline note-text">${esc(t.note||'—')}</td>
+                <td style="white-space:nowrap">${dueBadge}</td>
+                <td>${t.owner ? `<span class="owner-chip"><span>${ownerAnimals[t.owner] || '🐾'}</span> ${esc(t.owner)}</span>` : '—'}</td>
+                <td><div class="row-actions">
+                  <button class="icon-btn" onclick="openTaskModal('${pk}','${t.key}')" title="なおす"><i class="ti ti-edit"></i></button>
+                  <button class="icon-btn" onclick="deleteTask('${t.key}')" title="けす"><i class="ti ti-trash"></i></button>
+                </div></td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>` : `<div style="padding:1.25rem;font-size:12px;color:var(--text3)">タスクはありません 🐇</div>`}
+        
+        <div class="add-task-row">
+          <button class="add-task-btn" onclick="openTaskModal('${pk}')"><i class="ti ti-plus" style="font-size:14px"></i> タスクをあつめる</button>
+        </div>
+
+        <div class="chat-section">
+          <div class="chat-title"><i class="ti ti-messages"></i> もりのおしゃべり場 (${pChats.length})</div>
+          <div class="chat-history" id="chat-hist-${pk}">
+            ${chatHtml || '<div style="font-size:11px;color:var(--text3);padding:4px 0;">まだ誰も喋っていません 🌳</div>'}
+          </div>
+          <div class="chat-input-row" onclick="event.stopPropagation()">
+            <input type="text" class="chat-name-input" id="c-name-${pk}" placeholder="おなまえ" oninput="localStorage.setItem('forest_user', this.value)">
+            <input type="text" class="chat-msg-input" id="c-msg-${pk}" placeholder="どうぶつの姿でコメントをのこそう…" onkeydown="if(event.key==='Enter')sendComment('${pk}')">
+            <button class="btn-chat-send" onclick="sendComment('${pk}')">送信</button>
+          </div>
+        </div>
+
+        </div>
       </div>
     </div>`;
+  }
+  list.innerHTML = html || `<div class="empty-proj"><i class="ti ti-search"></i><p>みつかりませんでした 🦊</p></div>`;
 
-    html += `<div class="master-section"><div class="master-sec-title">🌿 事業（本部を選んで編集）</div>`;
-    honbus.forEach(h => {
-      const jigyous = Object.keys(window.master.honbuMap[h]||{});
-      html += `<div style="margin-bottom:10px">
-        <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:5px">${HONBU_ANIMALS[h]||'🌲'} ${h}</div>
-        <div class="master-items">
-          ${jigyous.map(j=>`<span class="master-tag">${j}<button class="master-tag-del" onclick="deleteMasterJigyou('${h}','${j}')">×</button></span>`).join('')}
-        </div>
-        <div class="master-add-row" style="margin-top:5px">
-          <input class="master-add-input" id="ms-jigyou-input-${CSS.escape(h)}" placeholder="事業名を追加…">
-          <button class="master-add-btn" onclick="addMasterJigyou('${h}')">追加</button>
-        </div>
-      </div>`;
-    });
-    html += `</div>`;
+  // チャット欄を自動スクロール
+  Object.keys(projects).forEach(pk => {
+    const el = document.getElementById(`chat-hist-${pk}`);
+    if(el) el.scrollTop = el.scrollHeight;
+    const nameEl = document.getElementById(`c-name-${pk}`);
+    if(nameEl && localStorage.getItem('forest_user')) nameEl.value = localStorage.getItem('forest_user');
+  });
+}
 
-    html += `<div class="master-section"><div class="master-sec-title">🦊 職種（本部›事業を選んで編集）</div>`;
-    honbus.forEach(h => {
-      const jigyous=Object.keys(window.master.honbuMap[h]||{});
-      jigyous.forEach(j => {
-        const sks=window.master.honbuMap[h][j]||[];
-        const key=`${h}__${j}`;
-        html += `<div style="margin-bottom:10px">
-          <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:5px">${HONBU_ANIMALS[h]||'🌲'} ${h} › 🌿 ${j}</div>
-          <div class="master-items">
-            ${sks.map((s,i)=>`<span class="master-tag">${s}<button class="master-tag-del" onclick="deleteMasterShokushu('${h}','${j}',${i})">×</button></span>`).join('')}
-          </div>
-          <div class="master-add-row" style="margin-top:5px">
-            <input class="master-add-input" id="ms-sk-input-${CSS.escape(key)}" placeholder="職種名を追加…">
-            <button class="master-add-btn" onclick="addMasterShokushu('${h}','${j}')">追加</button>
-          </div>
-        </div>`;
+// 💬 コメントを送信
+async function sendComment(pk) {
+  const nameEl = document.getElementById(`c-name-${pk}`);
+  const msgEl = document.getElementById(`c-msg-${pk}`);
+  const name = nameEl.value.trim();
+  const message = msgEl.value.trim();
+  if(!name || !message) { alert("おなまえとメッセージを入れてね 🐻"); return; }
+  
+  const animal = getAnimalByName(name);
+  const cdata = { name, animal, message, timestamp: Date.now() };
+
+  if(!db) {
+    if(!chats[pk]) chats[pk] = {};
+    chats[pk]['demo_c_' + Date.now()] = cdata;
+    msgEl.value = ''; renderProjects(); return;
+  }
+  await db.ref(`chats/${pk}`).push(cdata);
+  msgEl.value = '';
+}
+
+function toggleProject(pk) {
+  if (openProjects.has(pk)) openProjects.delete(pk); else openProjects.add(pk);
+  const card = document.getElementById('pc-'+pk); if (card) card.classList.toggle('open', openProjects.has(pk));
+}
+function toggleAllProjects() {
+  allOpen = !allOpen; const btn = document.getElementById('expand-btn');
+  if (allOpen) { Object.keys(projects).forEach(pk => openProjects.add(pk)); btn.innerHTML = '<i class="ti ti-chevrons-up"></i> 全部とじる'; } 
+  else { openProjects.clear(); btn.innerHTML = '<i class="ti ti-chevrons-down"></i> 全部ひらく'; }
+  renderProjects();
+}
+function setView(v) {
+  view = v;
+  document.getElementById('tab-all').className      = 'tab'+(v==='all'      ?' active':'');
+  document.getElementById('tab-mine').className     = 'tab'+(v==='mine'     ?' active':'');
+  document.getElementById('tab-calendar').className = 'tab'+(v==='calendar' ?' active':'');
+  const isCalendar = v === 'calendar';
+  document.getElementById('proj-list').style.display    = isCalendar ? 'none' : '';
+  document.getElementById('calendar-view').style.display = isCalendar ? '' : 'none';
+  // ツールバーのフィルタ等は隠さなくてよいが、カレンダー時は不要なものを調整
+  if (isCalendar) renderCalendar(); else renderProjects();
+}
+
+function openTaskModal(projKey, taskKey) {
+  editingTaskKey = taskKey || null; modalProjKey = projKey; const proj = projects[projKey]; const t = taskKey ? tasks[taskKey] : null;
+  document.getElementById('task-modal-title').textContent = t ? 'タスクの相談 🐿' : '新しいタスクをお出迎え 🐣';
+  document.getElementById('f-proj-display').value = proj ? proj.name : '';
+  document.getElementById('f-task').value = t?.task || ''; document.getElementById('f-status').value = t?.status || 'not_started';
+  document.getElementById('f-next').value = t?.nextAction || ''; document.getElementById('f-due').value = t?.due || ''; document.getElementById('f-note').value = t?.note || ''; document.getElementById('f-owner').value = t?.owner || '';
+  if (t && t.owner && ownerAnimals[t.owner]) { selectAnimal(ownerAnimals[t.owner]); } else { selectAnimal('🐰'); }
+  openModal('task-modal-bg'); document.getElementById('f-task').focus();
+}
+
+async function saveTask() {
+  const task = document.getElementById('f-task').value.trim(); const status = document.getElementById('f-status').value;
+  const nextAction = document.getElementById('f-next').value.trim(); const note = document.getElementById('f-note').value.trim(); const owner = document.getElementById('f-owner').value.trim(); const due = document.getElementById('f-due').value || null;
+  if (!task) { alert('なまえを教えてね'); return; }
+  
+  pushToUndoStack();
+  const data = { project:modalProjKey, task, status, nextAction, note, owner, updatedAt:Date.now() };
+  if (due) data.due = due; // 期日がある場合のみフィールドを追加（既存データに余計なフィールドを生やさない）
+  if(owner) { ownerAnimals[owner] = selectedAnimal; if(db) await db.ref('ownerAnimals/' + owner).set(selectedAnimal); }
+
+  if (!db) {
+    const k = editingTaskKey || 'demo_'+Date.now(); if (!editingTaskKey) data.createdAt = Date.now();
+    tasks[k] = {...tasks[k], ...data}; closeModal('task-modal-bg'); openProjects.add(modalProjKey); renderAll();
+    showToast(editingTaskKey ? '覚えました！✨' : '新しく仲間入り！🌱'); return;
+  }
+  if (editingTaskKey) {
+    // 期日を消した場合はFirebaseからも削除
+    if (!due) data.due = null;
+    await db.ref('tasks/'+editingTaskKey).update(data); showToast('新しくなりました！✏️');
+  } 
+  else { data.createdAt = Date.now(); await db.ref('tasks').push(data); openProjects.add(modalProjKey); showToast('タスクが増えました！🌾'); }
+  closeModal('task-modal-bg');
+}
+
+async function deleteTask(key) {
+  if (!confirm('このタスクとお別れしますか？')) return;
+  pushToUndoStack();
+  if (!db) { delete tasks[key]; renderAll(); showToast('お別れしました 🍃 (Ctrl+Zで戻せるよ)'); return; }
+  await db.ref('tasks/'+key).remove(); showToast('お別れしました 🍃 (Ctrl+Zで戻せるよ)');
+}
+
+function openProjectModal(pk) {
+  editingProjKey = pk || null; const proj = pk ? projects[pk] : null;
+  document.getElementById('proj-modal-title').textContent = proj ? '名前をかえる 📂' : '新しい部屋をつくる ⛺';
+  document.getElementById('f-proj-name').value = proj?.name || '';
+  selectProjIcon(proj?.icon || '📂'); selectProjColor(proj?.color || 'default');
+  openModal('proj-modal-bg'); document.getElementById('f-proj-name').focus();
+}
+
+async function saveProject() {
+  const name = document.getElementById('f-proj-name').value.trim(); if (!name) { alert('お名前が必要です'); return; }
+  pushToUndoStack();
+  const data = { name: name, icon: selectedProjIcon, color: selectedProjColor };
+
+  if (!db) {
+    const k = editingProjKey || 'demo_p'+Date.now();
+    if (!editingProjKey) { data.createdAt = Date.now(); projects[k] = data; } 
+    else { projects[k] = { ...projects[k], ...data, updatedAt: Date.now() }; }
+    openProjects.add(k); closeModal('proj-modal-bg'); renderAll();
+    showToast(editingProjKey ? 'カスタマイズ完了！' : '部屋ができたよ！✨'); return;
+  }
+  if (editingProjKey) { data.updatedAt = Date.now(); await db.ref('projects/'+editingProjKey).update(data); showToast('変更を保存しました！🎨'); } 
+  else { data.createdAt = Date.now(); const ref = await db.ref('projects').push(data); openProjects.add(ref.key); showToast('部屋をつくりました！⛺'); }
+  closeModal('proj-modal-bg');
+}
+
+async function deleteProject(pk) {
+  const taskCount = Object.values(tasks).filter(t=>t.project===pk).length;
+  if (!confirm(taskCount ? `「${projects[pk]?.name}」と中の ${taskCount}個 のタスクを全部消しちゃう？` : `「${projects[pk]?.name}」を消しちゃう？`)) return;
+  pushToUndoStack();
+  if (!db) { delete projects[pk]; Object.keys(tasks).filter(k=>tasks[k].project===pk).forEach(k=>delete tasks[k]); openProjects.delete(pk); renderAll(); showToast('お部屋を片付けました 🧹 (Ctrl+Zで戻せるよ)'); return; }
+  const dels = {}; Object.keys(tasks).filter(k=>tasks[k].project===pk).forEach(k=>{ dels['tasks/'+k]=null; }); dels['projects/'+pk] = null;
+  await db.ref().update(dels); openProjects.delete(pk); showToast('お部屋を片付けました 🧹 (Ctrl+Zで戻せるよ)');
+}
+
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function onBgClick(e, id) { if (e.target===document.getElementById(id)) closeModal(id); }
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2500); }
+
+async function syncToSpreadsheet() {
+  const btn = document.getElementById('sync-sheet-btn'); const originalText = btn.innerHTML;
+  btn.disabled = true; btn.innerHTML = '<i class="ti ti-loader-2" style="animation: spin 1s linear infinite;"></i> お届け中…';
+  if (!document.getElementById('spin-style')) { const style = document.createElement('style'); style.id = 'spin-style'; style.innerHTML = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }'; document.head.appendChild(style); }
+  try {
+    const exportData = [];
+    Object.entries(tasks).forEach(([tKey, t]) => {
+      const proj = projects[t.project];
+      exportData.push({
+        projectName: proj ? `${proj.icon || '📂'} ${proj.name}` : '不明な部屋',
+        task: t.task || '', status: STATUS[t.status]?.label || t.status, nextAction: t.nextAction || '', note: t.note || '', owner: t.owner ? `${ownerAnimals[t.owner] || ''} ${t.owner}` : '', updatedAt: t.updatedAt || t.createdAt || Date.now()
       });
     });
-    html += `</div>`;
+    if (exportData.length === 0) { alert('届けるデータが空っぽです。'); btn.disabled = false; btn.innerHTML = originalText; return; }
+    const gasUrl = "https://script.google.com/macros/s/AKfycbxw9ZX_fXxAH69xjbFl7fVmqnFOu2l7eomkEm1WqG56BNTEJQ_l7zIxXJPSdu97gZUT/exec";
+    const response = await fetch(gasUrl, { method: 'POST', body: JSON.stringify(exportData) });
+    const result = await response.json();
+    if (result.status === 'success') { showToast('スプレッドシートに届きました！🕊️'); } else { throw new Error(result.message); }
+  } catch (error) { console.error(error); alert('お届けに失敗しちゃいました。'); } finally { btn.disabled = false; btn.innerHTML = originalText; }
+}
+// ── 📅 カレンダー機能 ──
+let calYear  = new Date().getFullYear();
+let calMonth = new Date().getMonth(); // 0-indexed
 
-    html += masterListSection('🎋 レイヤー', window.master.layers, 'layers', 'ms-layer-input');
-    html += masterListSection('📱 採用媒体', window.master.media, 'media', 'ms-media-input');
-    html += masterListSection('🌸 ステータス', window.master.statuses, 'statuses', 'ms-status-input');
-    document.getElementById('master-body').innerHTML = html;
+function renderCalendar() {
+  const today = new Date();
+  const todayStr = toDateStr(today);
+  const firstDay = new Date(calYear, calMonth, 1);
+  const lastDay  = new Date(calYear, calMonth + 1, 0);
+  const startDow = firstDay.getDay(); // 0=Sun
+  const daysInMonth = lastDay.getDate();
+
+  // 期日のあるタスクをdateStr→tasks[]のマップに
+  const tasksByDate = {};
+  Object.entries(tasks).forEach(([k, t]) => {
+    if (!t.due) return;
+    if (!tasksByDate[t.due]) tasksByDate[t.due] = [];
+    tasksByDate[t.due].push({ key: k, ...t });
+  });
+
+  // ステータス色マップ
+  const STATUS_COLORS = {
+    not_started: ['var(--gray-bg)',  'var(--gray-tx)'],
+    in_progress:  ['var(--blue-bg)', 'var(--blue-tx)'],
+    waiting:      ['var(--amber-bg)','var(--amber-tx)'],
+    done:         ['var(--green-bg)','var(--green-tx)'],
+    blocked:      ['var(--red-bg)',  'var(--red-tx)'],
+  };
+
+  const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  const dowLabels  = ['日','月','火','水','木','金','土'];
+
+  // セルを生成（前月埋め → 当月 → 翌月埋め）
+  let cells = '';
+  // 前月の空セル
+  const prevMonthDays = new Date(calYear, calMonth, 0).getDate();
+  for (let i = 0; i < startDow; i++) {
+    const d = prevMonthDays - startDow + 1 + i;
+    cells += `<div class="cal-cell other-month"><div class="cal-day-num">${d}</div></div>`;
   }
-
-  function masterListSection(title, arr, key, inputId) {
-    return `<div class="master-section">
-      <div class="master-sec-title">${title}</div>
-      <div class="master-items">
-        ${arr.map((v,i)=>`<span class="master-tag">${v}<button class="master-tag-del" onclick="deleteMasterItem('${key}',${i})">×</button></span>`).join('')}
-      </div>
-      <div class="master-add-row" style="margin-top:8px">
-        <input class="master-add-input" id="${inputId}" placeholder="追加…">
-        <button class="master-add-btn" onclick="addMasterItem('${key}','${inputId}')">追加</button>
-      </div>
+  // 当月セル
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = dateStr === todayStr;
+    const dow = new Date(calYear, calMonth, d).getDay();
+    const dayTasks = tasksByDate[dateStr] || [];
+    const maxShow = 3;
+    const chipsHtml = dayTasks.slice(0, maxShow).map(t => {
+      const [bg, tx] = STATUS_COLORS[t.status] || STATUS_COLORS.not_started;
+      const proj = projects[t.project];
+      const icon = proj?.icon || '📌';
+      return `<div class="cal-task-chip" style="background:${bg};color:${tx}" onclick="openTaskModal('${t.project}','${t.key}')" title="${esc(t.task)}">${icon} ${esc(t.task)}</div>`;
+    }).join('');
+    const moreHtml = dayTasks.length > maxShow ? `<div class="cal-more">+${dayTasks.length - maxShow}件</div>` : '';
+    const numStyle = dow === 0 ? 'color:var(--red-tx)' : dow === 6 ? 'color:var(--blue-tx)' : '';
+    cells += `<div class="cal-cell${isToday?' today':''}">
+      <div class="cal-day-num" style="${numStyle}">${isToday ? d : d}</div>
+      ${chipsHtml}${moreHtml}
     </div>`;
   }
-
-  window.addMasterHonbu = async function() {
-    const v=document.getElementById('ms-honbu-input').value.trim(); if(!v) return;
-    if(!window.master.honbuMap[v]) window.master.honbuMap[v]={};
-    await window.saveAll(); window.renderMasterBody();
-  }
-  window.deleteMasterHonbu = async function(h) {
-    if(!confirm(`本部「${h}」を削除しますか？`)) return;
-    delete window.master.honbuMap[h]; await window.saveAll(); window.renderMasterBody();
-  }
-  window.addMasterJigyou = async function(h) {
-    const id=`ms-jigyou-input-${CSS.escape(h)}`;
-    const v=document.getElementById(id)?.value.trim(); if(!v) return;
-    if(!window.master.honbuMap[h]) window.master.honbuMap[h]={};
-    if(!window.master.honbuMap[h][v]) window.master.honbuMap[h][v]=[];
-    await window.saveAll(); window.renderMasterBody();
-  }
-  window.deleteMasterJigyou = async function(h,j) {
-    if(!confirm(`事業「${j}」を削除しますか？`)) return;
-    delete window.master.honbuMap[h][j]; await window.saveAll(); window.renderMasterBody();
-  }
-  window.addMasterShokushu = async function(h,j) {
-    const key=`${h}__${j}`;
-    const v=document.getElementById(`ms-sk-input-${CSS.escape(key)}`)?.value.trim(); if(!v) return;
-    if(!window.master.honbuMap[h][j].includes(v)) window.master.honbuMap[h][j].push(v);
-    await window.saveAll(); window.renderMasterBody();
-  }
-  window.deleteMasterShokushu = async function(h,j,i) {
-    window.master.honbuMap[h][j].splice(i,1); await window.saveAll(); window.renderMasterBody();
-  }
-  window.addMasterItem = async function(key, inputId) {
-    const v=document.getElementById(inputId)?.value.trim(); if(!v) return;
-    if(!window.master[key].includes(v)) window.master[key].push(v);
-    await window.saveAll(); window.renderMasterBody();
-  }
-  window.deleteMasterItem = async function(key, i) {
-    window.master[key].splice(i,1); await window.saveAll(); window.renderMasterBody();
+  // 翌月の空セル（6行になるよう）
+  const total = startDow + daysInMonth;
+  const trailing = total % 7 === 0 ? 0 : 7 - (total % 7);
+  for (let i = 1; i <= trailing; i++) {
+    cells += `<div class="cal-cell other-month"><div class="cal-day-num">${i}</div></div>`;
   }
 
-  window.renderCalendar = function() {
-    document.getElementById('cal-title').textContent=`${window.calYear}年 ${window.calMonth+1}月 🍃`;
-    const weekdays=['日','月','火','水','木','金','土'];
-    let html=weekdays.map(w=>`<div class="cal-weekday">${w}</div>`).join('');
-    const first=new Date(window.calYear,window.calMonth,1), startDay=first.getDay();
-    const daysInMonth=new Date(window.calYear,window.calMonth+1,0).getDate();
-    const daysInPrev=new Date(window.calYear,window.calMonth,0).getDate();
-    const events={};
-    window.records.forEach(r=>{ if(!events[r.deadline]) events[r.deadline]=[]; events[r.deadline].push(r); });
-    const cells=Math.ceil((startDay+daysInMonth)/7)*7;
-    for(let i=0;i<cells;i++){
-      let dn,mo=window.calMonth,yr=window.calYear,other=false;
-      if(i<startDay){dn=daysInPrev-startDay+i+1;mo=window.calMonth-1;other=true;}
-      else if(i>=startDay+daysInMonth){dn=i-startDay-daysInMonth+1;mo=window.calMonth+1;other=true;}
-      else dn=i-startDay+1;
-      if(mo<0){mo=11;yr--;}else if(mo>11){mo=0;yr++;}
-      const ds=`${yr}-${String(mo+1).padStart(2,'0')}-${String(dn).padStart(2,'0')}`;
-      const isToday=ds===today.toISOString().split('T')[0];
-      const dayEvs=events[ds]||[];
-      const evHtml=dayEvs.slice(0,2).map(e=>`<div class="cal-event cal-ev-${e.priority}" title="${e.honbu} ${e.shokushu}">${window.animalForPri(e.priority)} ${e.shokushu}</div>`).join('');
-      const more=dayEvs.length>2?`<div style="font-size:9px;color:var(--text2)">+${dayEvs.length-2}件</div>`:'';
-      html+=`<div class="cal-day${isToday?' today':''}${other?' other-month':''}"><div class="cal-day-num">${dn}</div>${evHtml}${more}</div>`;
-    }
-    document.getElementById('cal-grid').innerHTML=html;
-  }
-  window.calNav = function(d){ window.calMonth+=d; if(window.calMonth<0){window.calMonth=11;window.calYear--;}else if(window.calMonth>11){window.calMonth=0;window.calYear++;} window.renderCalendar(); }
+  // 期日あり・期限切れタスク一覧（今月の全期日タスク）
+  const thisMonthTasks = Object.entries(tasks)
+    .filter(([,t]) => t.due && t.due.startsWith(`${calYear}-${String(calMonth+1).padStart(2,'0')}`))
+    .sort(([,a],[,b]) => a.due.localeCompare(b.due));
 
-  const C=['#8aab7a','#f7b86f','#88c7e0','#f0a0a0','#c5b0e0','#80d4c8','#f7d870','#a8c8f0'];
-  function dc(id){if(window.charts[id]){window.charts[id].destroy();delete window.charts[id];}}
-  function baseOpts(legend=false){
-    return {
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:legend,labels:{color:'#7a6055',font:{size:11},boxWidth:12,padding:10}}},
-      scales:{
-        x:{grid:{color:'rgba(139,101,81,.08)'},ticks:{color:'#7a6055',font:{size:10}}},
-        y:{grid:{color:'rgba(139,101,81,.08)'},ticks:{color:'#7a6055',font:{size:10}}}
-      }
-    };
-  }
-  function donutOpts(){return{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#7a6055',font:{size:11},boxWidth:12,padding:10}}}};}
+  const listHtml = thisMonthTasks.length ? thisMonthTasks.map(([k,t]) => {
+    const st = STATUS[t.status] || STATUS.not_started;
+    const proj = projects[t.project];
+    const isOverdue = t.due < todayStr && t.status !== 'done';
+    const isToday2  = t.due === todayStr;
+    const dueCls = isOverdue ? 'overdue' : isToday2 ? 'today-due' : '';
+    const dueLabel = isOverdue ? '⚠ 期限切れ' : isToday2 ? '📌 今日！' : `📅 ${t.due}`;
+    return `<tr class="${t.status==='done'?'task-done-row':''}">
+      <td class="task-name">📌 ${esc(t.task)}</td>
+      <td><span class="badge ${st.cls}">${st.dot} ${st.label}</span></td>
+      <td><span class="due-badge ${dueCls}">${dueLabel}</span></td>
+      <td>${proj ? `${proj.icon||'📂'} ${esc(proj.name)}` : '—'}</td>
+      <td>${t.owner ? `<span class="owner-chip">${ownerAnimals[t.owner]||'🐾'} ${esc(t.owner)}</span>` : '—'}</td>
+      <td><button class="icon-btn" onclick="openTaskModal('${t.project}','${k}')"><i class="ti ti-edit"></i></button></td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="6" style="padding:1.5rem;text-align:center;color:var(--text3)">今月は期日のあるタスクがありません 🌿</td></tr>`;
 
-  window.renderCharts = function() {
-    window.renderKPIs('kpi-row2');
-    {const ls=[...new Set(window.records.map(r=>r.honbu))];const n=ls.map(h=>window.records.filter(r=>r.honbu===h).reduce((a,r)=>a+(r.needed||0),0));const c=ls.map(h=>window.records.filter(r=>r.honbu===h).reduce((a,r)=>a+(r.current||0),0));dc('honbu');window.charts['honbu']=new Chart(document.getElementById('chart-honbu'),{type:'bar',data:{labels:ls,datasets:[{label:'必要',data:n,backgroundColor:'rgba(138,171,122,.7)',borderRadius:6},{label:'採用済',data:c,backgroundColor:'rgba(128,212,200,.7)',borderRadius:6}]},options:{...baseOpts(true)}});}
-    {const ls=[...new Set(window.records.map(r=>r.shokushu))];const d=ls.map(s=>window.records.filter(r=>r.shokushu===s).reduce((a,r)=>a+(r.needed||0),0));dc('shokushu');window.charts['shokushu']=new Chart(document.getElementById('chart-shokushu'),{type:'bar',data:{labels:ls,datasets:[{label:'必要人数',data:d,backgroundColor:C,borderRadius:6}]},options:{...baseOpts(false),indexAxis:'y'}});}
-    {const ps=['S','A','B','C'];const d=ps.map(p=>window.records.filter(r=>r.priority===p).length);dc('priority');window.charts['priority']=new Chart(document.getElementById('chart-priority'),{type:'doughnut',data:{labels:ps.map(p=>window.animalForPri(p)+' '+p),datasets:[{data:d,backgroundColor:['#f0a0a0','#f7d870','#88c7e0','#d4d4d4'],borderWidth:0,hoverOffset:8}]},options:donutOpts()});}
-    {const ls=[...new Set(window.records.map(r=>r.media))];const d=ls.map(m=>window.records.filter(r=>r.media===m).length);dc('media');window.charts['media']=new Chart(document.getElementById('chart-media'),{type:'doughnut',data:{labels:ls,datasets:[{data:d,backgroundColor:C,borderWidth:0,hoverOffset:8}]},options:donutOpts()});}
-    {const ss=['採用中','計画中','達成','期限超過','保留'];const d=ss.map(s=>window.records.filter(r=>r.status===s).length);dc('status');window.charts['status']=new Chart(document.getElementById('chart-status'),{type:'pie',data:{labels:ss,datasets:[{data:d,backgroundColor:['#88c7e0','#d4d4d4','#8aab7a','#f0a0a0','#f7d870'],borderWidth:0}]},options:donutOpts()});}
-    {const ls=[...new Set(window.records.map(r=>r.layer))];const d=ls.map(l=>window.records.filter(r=>r.layer===l).reduce((a,r)=>a+(r.needed||0),0));dc('layer');window.charts['layer']=new Chart(document.getElementById('chart-layer'),{type:'bar',data:{labels:ls,datasets:[{label:'必要人数',data:d,backgroundColor:C.slice(2),borderRadius:6}]},options:baseOpts(false)});}
-    {const ls=[...new Set(window.records.map(r=>r.honbu))];const d=ls.map(h=>window.records.filter(r=>r.honbu===h).reduce((a,r)=>a+(r.cpa||0)*(r.needed||0),0));dc('budget');window.charts['budget']=new Chart(document.getElementById('chart-budget'),{type:'bar',data:{labels:ls,datasets:[{label:'暫定予算(万円)',data:d,backgroundColor:'rgba(197,176,224,.8)',borderRadius:6}]},options:baseOpts(false)});}
-  }
+  document.getElementById('calendar-view').innerHTML = `
+    <div class="cal-header">
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="calMove(-1)"><i class="ti ti-chevron-left"></i></button>
+        <div class="cal-title">${calYear}年 ${monthNames[calMonth]}</div>
+        <button class="cal-nav-btn" onclick="calMove(1)"><i class="ti ti-chevron-right"></i></button>
+        <button class="cal-today-btn" onclick="calToday()">今月</button>
+      </div>
+      <div style="font-size:12px;color:var(--text3)">期日のあるタスクが表示されます</div>
+    </div>
+    <div class="cal-grid">
+      ${dowLabels.map(d=>`<div class="cal-dow">${d}</div>`).join('')}
+      ${cells}
+    </div>
+    ${thisMonthTasks.length ? `
+    <div style="margin-top:1.5rem">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text2)">📋 今月の期日タスク一覧</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden">
+        <table>
+          <thead><tr>
+            <th class="col-task">タスク名</th>
+            <th class="col-status">じょうたい</th>
+            <th style="width:18%">期日</th>
+            <th style="width:18%">プロジェクト</th>
+            <th class="col-owner">担当者</th>
+            <th class="col-actions"></th>
+          </tr></thead>
+          <tbody>${listHtml}</tbody>
+        </table>
+      </div>
+    </div>` : ''}
+  `;
+}
 
-  window.exportCSV = function() {
-    const headers=['本部','事業','職種','レイヤー','採用媒体','採用期限','残日数','必要人数','現在採用','残数','ステータス','優先度','CPA(万)','暫定予算(万)','備考'];
-    const rows=window.records.map(r=>[r.honbu,r.jigyou,r.shokushu,r.layer,r.media,r.deadline,window.daysUntil(r.deadline),r.needed,r.current,Math.max(r.needed-r.current,0),r.status,r.priority,r.cpa,(r.cpa||0)*(r.needed||0),r.note||''].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
-    const csv='\uFEFF'+[headers.join(','),...rows].join('\n');
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
-    a.download=`採用計画_${new Date().toISOString().split('T')[0]}.csv`; a.click();
-  }
+function toDateStr(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function calMove(dir) {
+  calMonth += dir;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth <  0) { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+function calToday() {
+  calYear  = new Date().getFullYear();
+  calMonth = new Date().getMonth();
+  renderCalendar();
+}
 
-  window.switchTab = function(name) {
-    document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['list','calendar','analytics'][i]===name));
-    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-    document.getElementById('view-'+name).classList.add('active');
-    if(name==='calendar') window.renderCalendar();
-    if(name==='analytics') window.renderCharts();
-  }
-
-  window.refresh = function() {
-    window.renderKPIs('kpi-row');
-    window.renderAccordion();
-  }
-
-  document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal')) window.closeModal();});
-  document.getElementById('master-modal').addEventListener('click',e=>{if(e.target===document.getElementById('master-modal')) window.closeMasterModal();});
+initFirebase();
 </script>
 </body>
 </html>
